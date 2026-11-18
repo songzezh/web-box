@@ -1,3 +1,6 @@
+import LanguageSwitcher from './LanguageSwitcher'
+import '../i18n/index'
+import { useTranslation } from 'react-i18next'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Box, Menu, Moon, Sun, X } from 'lucide-react'
@@ -5,8 +8,9 @@ import { useTheme } from '../hooks/useTheme'
 import GlobalNavigation from './GlobalNavigation'
 
 export default function Header() {
+  const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
   const { theme, toggleTheme } = useTheme()
-  const themeAction = theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'
+  const themeAction = theme === 'light' ? t('common:darkTheme') : t('common:lightTheme')
   const [open, setOpen] = useState(false)
   const header = useRef<HTMLElement>(null)
   const toggle = useRef<HTMLButtonElement>(null)
@@ -58,10 +62,11 @@ export default function Header() {
       <div className="header-inner">
         <Link className="brand" to="/" onClick={() => setOpen(false)}><Box size={24} strokeWidth={1.5} aria-hidden="true" /><span>Web <strong>Box</strong></span></Link>
         <GlobalNavigation className="desktop-nav" />
+        <LanguageSwitcher />
         <button type="button" className="theme-toggle" aria-label={themeAction} title={themeAction} onClick={toggleTheme}>
           {theme === 'light' ? <Moon size={20} strokeWidth={1.5} aria-hidden="true" /> : <Sun size={20} strokeWidth={1.5} aria-hidden="true" />}
         </button>
-        <button ref={toggle} type="button" className="menu-toggle" aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
+        <button ref={toggle} type="button" className="menu-toggle" aria-label={open ? t('common:closeNavigation') : t('common:openNavigation')} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
       </div>
       {open && <GlobalNavigation id="mobile-navigation" className="mobile-nav" onNavigate={closeMenu} onBlur={event => {
         if (event.relatedTarget !== toggle.current && !event.currentTarget.contains(event.relatedTarget)) setOpen(false)

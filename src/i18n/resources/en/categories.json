@@ -1,0 +1,23 @@
+{
+  "text-content.name": "Text & Content",
+  "text-content.description": "Make everyday words easier to work with.",
+  "text-content.shortName": "Text",
+  "data-format.name": "Data & Format",
+  "data-format.description": "Bring structure and clarity to your data.",
+  "data-format.shortName": "Data",
+  "encode-convert.name": "Encode & Convert",
+  "encode-convert.description": "Move between encodings and formats.",
+  "encode-convert.shortName": "Encode",
+  "security-random.name": "Security & Random",
+  "security-random.description": "Generate random values for everyday tasks.",
+  "security-random.shortName": "Security",
+  "time-schedule.name": "Time & Schedule",
+  "time-schedule.description": "Work with dates, durations, and timestamps.",
+  "time-schedule.shortName": "Time",
+  "dev-test.name": "Development & Test",
+  "dev-test.description": "Small utilities for your development workflow.",
+  "dev-test.shortName": "Dev",
+  "image-design.name": "Image & Design",
+  "image-design.description": "Practical helpers for images and color.",
+  "image-design.shortName": "Image"
+}

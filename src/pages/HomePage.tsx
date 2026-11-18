@@ -1,34 +1,37 @@
+import '../i18n/index'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, ShieldCheck } from 'lucide-react'
 import { categories, getCategoryPath, statistics } from '../registry'
 import { CategoryCard } from '../components/CategoryCard'
 
 export default function HomePage() {
+  const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
   return (
     <>
       <section className="introduction page-grid">
-        <p className="eyebrow intro-label">YOUR BROWSER. YOUR WORKSPACE.</p>
-        <h1>Tools for everyday work.</h1>
-        <p className="lead">A collection of lightweight, privacy-first utilities that run directly in your browser.</p>
+        <p className="eyebrow intro-label">{t('common:homeEyebrow')}</p>
+        <h1>{t('common:homeTitle')}</h1>
+        <p className="lead">{t('common:homeDescription')}</p>
         <div className="intro-bottom">
           <dl className="stats">
-            <div><dt>Tool Categories</dt><dd>{statistics.categories}</dd></div>
-            <div><dt>Planned Tools</dt><dd>{statistics.planned}</dd></div>
-            <div><dt>Available Tools</dt><dd>{statistics.available}</dd></div>
+            <div><dt>{t('common:toolCategories')}</dt><dd>{statistics.categories}</dd></div>
+            <div><dt>{t('common:plannedTools')}</dt><dd>{statistics.planned}</dd></div>
+            <div><dt>{t('common:availableTools')}</dt><dd>{statistics.available}</dd></div>
           </dl>
-          <p className="privacy-note"><ShieldCheck size={20} aria-hidden="true" />Local by design. Private by default.</p>
+          <p className="privacy-note"><ShieldCheck size={20} aria-hidden="true" />{t('common:privacyNote')}</p>
         </div>
       </section>
       <section className="page-grid category-directory" aria-labelledby="categories-title">
         <div className="directory-intro">
-          <div><p className="eyebrow">BROWSE BY CATEGORY</p><h2 id="categories-title">Find your starting point.</h2></div>
-          <p>Choose a category to explore its tools and availability.</p>
+          <div><p className="eyebrow">{t('common:browseCategory')}</p><h2 id="categories-title">{t('common:directoryTitle')}</h2></div>
+          <p>{t('common:directoryDescription')}</p>
         </div>
-        <div className="category-grid">{categories.map(category => <CategoryCard key={category.id} category={category} path={getCategoryPath(category.id)} count={`${category.plannedToolCount} planned tools`} />)}</div>
+        <div className="category-grid">{categories.map(category => <CategoryCard key={category.id} category={category} path={getCategoryPath(category.id)} count={t('common:plannedCount', { count: category.plannedToolCount })} />)}</div>
       </section>
       <section className="page-grid resource-entry" aria-labelledby="resource-entry-title">
-        <div><p className="eyebrow">BEYOND THE TOOLBOX</p><h2 id="resource-entry-title">External resources</h2><p className="secondary">Explore the separate directory of destinations outside Web Box.</p></div>
-        <Link className="resource-entry-link" to="/resources">Browse resources<ArrowUpRight size={20} aria-hidden="true" /></Link>
+        <div><p className="eyebrow">{t('common:beyondToolbox')}</p><h2 id="resource-entry-title">{t('resources:title')}</h2><p className="secondary">{t('common:resourceEntryDescription')}</p></div>
+        <Link className="resource-entry-link" to="/resources">{t('common:browseResources')}<ArrowUpRight size={20} aria-hidden="true" /></Link>
       </section>
     </>
   )

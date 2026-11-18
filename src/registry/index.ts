@@ -10,9 +10,9 @@ export const externalResourceCategories = [
   { id: 'ext-productivity', name: 'Productivity & Office', description: 'Resources for collaboration, diagrams, and everyday productivity.', icon: 'briefcase' },
   { id: 'ext-learning', name: 'Learning & Documentation', description: 'Technical documentation, tutorials, and learning references.', icon: 'book' },
   { id: 'ext-open-source', name: 'Open Source & Community', description: 'Discover open source projects and technical communities.', icon: 'community' },
-  { id: 'ext-official', name: 'Web Box & Official Resources', description: 'Web Box and related official resources.', icon: 'site' },
+  { id: 'ext-official', name: 'Site & Official Resources', description: 'Web Box and related official resources.', icon: 'site' },
 ] as const satisfies readonly { id: string; name: string; description: string; icon: string }[]
-// Stable IDs also serve as future translation keys; display copy stays in this configuration.
+// IDs and translation keys are stable; English metadata remains available to registry consumers.
 export type ExternalResourceCategory = typeof externalResourceCategories[number]
 export type ExternalResourceCategoryId = ExternalResourceCategory['id']
 export interface ExternalResource { id: string; name: string; description: string; categoryId: ExternalResourceCategoryId; url: string }

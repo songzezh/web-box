@@ -1,0 +1,16 @@
+{
+  "text-statistics.name": "Text statistics",
+  "text-statistics.description": "Count characters and words in a piece of text.",
+  "json-formatter.name": "JSON formatter",
+  "json-formatter.description": "Format structured JSON for easier reading.",
+  "base64.name": "Base64 encode / decode",
+  "base64.description": "Convert text to and from Base64 encoding.",
+  "password-generator.name": "Random password generator",
+  "password-generator.description": "Generate random passwords in your browser.",
+  "unix-timestamp.name": "Unix timestamp converter",
+  "unix-timestamp.description": "Convert between Unix timestamps and dates.",
+  "regex-tester.name": "Regular expression tester",
+  "regex-tester.description": "Explore patterns and test text matches.",
+  "color-converter.name": "Color converter",
+  "color-converter.description": "Convert color values between common formats."
+}

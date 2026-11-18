@@ -543,3 +543,5 @@ footer{
 @media(max-width:671px) {
   .resource-nav { display:grid;grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
+.language-switcher { margin-left:auto; }
+.language-switcher + .theme-toggle { margin-left:0; }

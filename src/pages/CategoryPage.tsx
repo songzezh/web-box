@@ -1,9 +1,14 @@
+import '../i18n/index'
+import { useCatalogTranslation } from '../i18n/useCatalogTranslation'
+import { useTranslation } from 'react-i18next'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 import { getCategoryById, getCategoryPath, getToolsByCategory } from '../registry'
 import { ToolCard, ToolPageLayout } from '../components/Tools'
 import NotFoundPage from './NotFoundPage'
 
 export default function CategoryPage() {
+  const copy = useCatalogTranslation()
+  const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
   const { categoryId = '' } = useParams()
   const { pathname } = useLocation()
   const category = getCategoryById(categoryId)
@@ -13,15 +18,15 @@ export default function CategoryPage() {
   const available = tools.filter(tool => tool.status === 'available').length
 
   return (
-    <ToolPageLayout title={category.name} description={category.description}>
+    <ToolPageLayout title={copy.category(category.id, 'name')} description={copy.category(category.id, 'description')}>
       <dl className="stats category-stats">
-        <div><dt>Planned Tools</dt><dd>{category.plannedToolCount}</dd></div>
-        <div><dt>Registered Tools</dt><dd>{tools.length}</dd></div>
-        <div><dt>Available Tools</dt><dd>{available}</dd></div>
+        <div><dt>{t('common:plannedTools')}</dt><dd>{category.plannedToolCount}</dd></div>
+        <div><dt>{t('common:registeredTools')}</dt><dd>{tools.length}</dd></div>
+        <div><dt>{t('common:availableTools')}</dt><dd>{available}</dd></div>
       </dl>
-      <section aria-label={`${category.name} tools`}>
-        {tools.length ? <div className="tool-grid">{tools.map(tool => <ToolCard key={tool.id} tool={tool} category={category.name} />)}</div> : (
-          <div className="empty-state"><div><h2>No tools registered yet.</h2><p>Tools will appear here as this category takes shape.</p></div></div>
+      <section aria-label={t('common:toolsLabel', { name: copy.category(category.id) })}>
+        {tools.length ? <div className="tool-grid">{tools.map(tool => <ToolCard key={tool.id} tool={tool} category={copy.category(category.id, 'name')} />)}</div> : (
+          <div className="empty-state"><div><h2>{t('common:emptyToolsTitle')}</h2><p>{t('common:emptyToolsDescription')}</p></div></div>
         )}
       </section>
     </ToolPageLayout>

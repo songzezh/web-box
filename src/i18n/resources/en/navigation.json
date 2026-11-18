@@ -1,0 +1,10 @@
+{
+  "home": "Home",
+  "resources": "Resources",
+  "about": "About",
+  "privacy": "Privacy",
+  "notFound": "Not found",
+  "main": "Main navigation",
+  "footer": "Footer navigation",
+  "breadcrumb": "Breadcrumb"
+}

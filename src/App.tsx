@@ -1,7 +1,10 @@
+import './i18n/index'
+import { useCatalogTranslation } from './i18n/useCatalogTranslation'
+import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
 import { Link, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
-import { getCategoryById, getCategoryPath, getToolById, projectUrl, externalResourceCategories, getResourceCategoryPath } from './registry'
+import { getCategoryPath, getToolById, projectUrl, externalResourceCategories, getResourceCategoryPath } from './registry'
 import Header from './components/Header'
 import { getRouteCategory, getRouteResourceCategory } from './navigation'
 import { ToolPageLayout } from './components/Tools'
@@ -13,21 +16,33 @@ import NotFound from './pages/NotFoundPage'
 import './App.css'
 
 function ToolPage() {
+  const copy = useCatalogTranslation()
+  const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
   const { toolId = '' } = useParams()
   const tool = getToolById(toolId)
   if (!tool) return <NotFound />
-  return <ToolPageLayout title={tool.name} description={tool.description}><div className="empty-state"><div><span className="tag">Coming soon</span><h2>This tool is planned.</h2><p>No tool functionality is available yet. No input is collected.</p><Link to={getCategoryPath(tool.categoryId)}>Back to {getCategoryById(tool.categoryId)?.name}</Link></div></div></ToolPageLayout>
+  return <ToolPageLayout title={copy.tool(tool.id, 'name')} description={copy.tool(tool.id, 'description')}><div className="empty-state"><div><span className="tag">{t('common:comingSoon')}</span><h2>{t('common:plannedTitle')}</h2><p>{t('common:plannedDescription')}</p><Link to={getCategoryPath(tool.categoryId)}>{t('common:backCategory', { name: copy.category(tool.categoryId) })}</Link></div></div></ToolPageLayout>
 }
 function RouteEffects() {
+  const copy = useCatalogTranslation()
+  const { t, i18n } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
   const location = useLocation()
+  const resourceCategory = getRouteResourceCategory(location.pathname)
+  const category = getRouteCategory(location.pathname)
+  const tool = location.pathname.startsWith('/tools/') ? getToolById(location.pathname.split('/')[2]) : undefined
+  const title = resourceCategory ? copy.resourceCategory(resourceCategory.id) : tool ? copy.tool(tool.id) : category ? copy.category(category.id) : ({ '/': t('common:homeTitle'), '/about': t('navigation:about'), '/privacy': t('navigation:privacy'), '/resources': t('resources:title') }[location.pathname] ?? t('common:notFoundTitle'))
   useEffect(() => {
-    const title = getRouteResourceCategory(location.pathname)?.name ?? (location.pathname === '/' ? 'Tools for everyday work' : getRouteCategory(location.pathname) && !location.pathname.startsWith('/tools/') ? getRouteCategory(location.pathname)?.name : location.pathname.startsWith('/tools/') ? getToolById(location.pathname.split('/')[2])?.name ?? 'Page not found' : ({ '/about': 'About', '/privacy': 'Privacy', '/resources': 'External resources' }[location.pathname] ?? 'Page not found'))
     document.title = `${title} — Web Box`
+    document.documentElement.lang = i18n.resolvedLanguage ?? 'en'
+    document.querySelector('meta[name="description"]')?.setAttribute('content', t('common:metaDescription'))
+  }, [title, t, i18n, i18n.resolvedLanguage])
+  useEffect(() => {
     window.scrollTo(0, 0)
     document.getElementById('main-content')?.focus()
   }, [location])
   return null
 }
 export default function App() {
-  return <><a className="skip-link" href="#main-content" onClick={e => { e.preventDefault(); document.getElementById('main-content')?.focus() }}>Skip to content</a><Header /><RouteEffects /><main id="main-content" tabIndex={-1}><Breadcrumbs /><Routes><Route path="/" element={<HomePage />} /><Route path="/resources" element={<ResourcesPage />} />{externalResourceCategories.map(category => <Route key={category.id} path={getResourceCategoryPath(category.id)} element={<ResourcesPage resourceCategoryId={category.id} />} />)}<Route path="/category/:categoryId" element={<CategoryPage />} /><Route path="/:categoryId" element={<CategoryPage />} /><Route path="/tools/:toolId" element={<ToolPage />} /><Route path="/about" element={<ToolPageLayout title="Small tools. Thoughtfully built." description="Web Box is a lightweight, privacy-first collection of utilities for everyday work."><h2>A toolbox in progress</h2><p>Browse seven categories of planned browser utilities. Each tool is clearly marked with its availability; the current examples are not functional tools yet.</p><h2>Built for your browser</h2><p>No account is required. This directory uses local metadata and does not depend on an external API.</p></ToolPageLayout>} /><Route path="/privacy" element={<ToolPageLayout title="Your work stays yours." description="Privacy is part of the foundation of Web Box."><h2>What we store</h2><p>Only your selected theme preference is saved in localStorage under “web-box-theme”. No tool input, files, or results are stored or uploaded by this application.</p><h2>Your choice</h2><p>Your device appearance is followed until you toggle the theme. Clear this site’s browser storage to remove the saved preference and follow your device again.</p><h2>Network requests and external links</h2><p>The hosting provider receives normal requests when delivering the site and its local fonts. Web Box includes no analytics or tracking scripts. External sites have their own privacy policies; links are clearly identified and open without access to this window.</p></ToolPageLayout>} /><Route path="*" element={<NotFound />} /></Routes></main><footer><div className="page-grid footer-inner"><div><Link className="footer-brand" to="/">Web Box</Link><p>Simple tools. Local processing. Privacy first.</p></div><nav aria-label="Footer navigation"><Link to="/about">About</Link><Link to="/privacy">Privacy</Link><a href={projectUrl} target="_blank" rel="noopener noreferrer">GitHub <ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a></nav><span className="footer-caption">Built for everyday work.</span></div></footer></>
+  const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
+  return <><a className="skip-link" href="#main-content" onClick={e => { e.preventDefault(); document.getElementById('main-content')?.focus() }}>{t('common:skipContent')}</a><Header /><RouteEffects /><main id="main-content" tabIndex={-1}><Breadcrumbs /><Routes><Route path="/" element={<HomePage />} /><Route path="/resources" element={<ResourcesPage />} />{externalResourceCategories.map(category => <Route key={category.id} path={getResourceCategoryPath(category.id)} element={<ResourcesPage resourceCategoryId={category.id} />} />)}<Route path="/category/:categoryId" element={<CategoryPage />} /><Route path="/:categoryId" element={<CategoryPage />} /><Route path="/tools/:toolId" element={<ToolPage />} /><Route path="/about" element={<ToolPageLayout title={t('common:aboutTitle')} description={t('common:aboutDescription')}><h2>{t('common:aboutProgressTitle')}</h2><p>{t('common:aboutProgress')}</p><h2>{t('common:aboutBrowserTitle')}</h2><p>{t('common:aboutBrowser')}</p></ToolPageLayout>} /><Route path="/privacy" element={<ToolPageLayout title={t('common:privacyTitle')} description={t('common:privacyDescription')}><h2>{t('common:storageTitle')}</h2><p>{t('common:storageDescription')}</p><h2>{t('common:choiceTitle')}</h2><p>{t('common:choiceDescription')}</p><h2>{t('common:networkTitle')}</h2><p>{t('common:networkDescription')}</p></ToolPageLayout>} /><Route path="*" element={<NotFound />} /></Routes></main><footer><div className="page-grid footer-inner"><div><Link className="footer-brand" to="/">Web Box</Link><p>{t('common:footerDescription')}</p></div><nav aria-label={t('navigation:footer')}><Link to="/about">{t('navigation:about')}</Link><Link to="/privacy">{t('navigation:privacy')}</Link><a href={projectUrl} target="_blank" rel="noopener noreferrer">GitHub <ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only">{t('common:newTab')}</span></a></nav><span className="footer-caption">{t('common:footerCaption')}</span></div></footer></>
 }

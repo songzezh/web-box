@@ -1,0 +1,23 @@
+{
+  "text-content.name": "文本与内容",
+  "text-content.description": "让日常文字处理更轻松。",
+  "text-content.shortName": "文本",
+  "data-format.name": "数据与格式",
+  "data-format.description": "让数据更有结构、更清晰。",
+  "data-format.shortName": "数据",
+  "encode-convert.name": "编码与转换",
+  "encode-convert.description": "在编码和格式之间轻松转换。",
+  "encode-convert.shortName": "编码",
+  "security-random.name": "安全与随机",
+  "security-random.description": "为日常任务生成随机值。",
+  "security-random.shortName": "安全",
+  "time-schedule.name": "时间与日程",
+  "time-schedule.description": "处理日期、时长和时间戳。",
+  "time-schedule.shortName": "时间",
+  "dev-test.name": "开发与测试",
+  "dev-test.description": "为开发流程准备的小工具。",
+  "dev-test.shortName": "开发",
+  "image-design.name": "图像与设计",
+  "image-design.description": "处理图像和颜色的实用助手。",
+  "image-design.shortName": "图像"
+}
