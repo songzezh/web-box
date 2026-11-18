@@ -1,5 +1,5 @@
 import { matchPath } from 'react-router-dom'
-import { categories, getCategoryById, getCategoryPath, getToolById } from './registry'
+import { categories, getCategoryById, getCategoryPath, getToolById, getResourceCategoryById } from './registry'
 
 export const navigationItems = [
   { label: 'Home', path: '/' },
@@ -21,6 +21,11 @@ export function getActiveNavigationPath(pathname: string) {
   const category = getRouteCategory(pathname)
   if (category) return getCategoryPath(category.id)
   if (matchPath('/', pathname)) return '/'
-  if (matchPath('/resources', pathname)) return '/resources'
+  if (getRouteResourceCategory(pathname) || matchPath('/resources', pathname)) return '/resources'
   return null
+}
+
+export function getRouteResourceCategory(pathname: string) {
+  const match = matchPath('/resources/:resourceCategoryId', pathname)
+  return match ? getResourceCategoryById(match.params.resourceCategoryId ?? '') : undefined
 }

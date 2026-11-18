@@ -2,7 +2,29 @@ export type CategoryIcon = 'text' | 'data' | 'convert' | 'security' | 'time' | '
 export type ToolStatus = 'available' | 'coming-soon'
 export interface ToolCategory { id: string; name: string; shortName: string; description: string; order: number; plannedToolCount: number; icon: CategoryIcon }
 export interface ToolDefinition { id: string; name: string; description: string; categoryId: string; path: string; status: ToolStatus; tags: string[] }
-export interface ExternalResource { id: string; name: string; description: string; category: string; url: string }
+export const externalResourceCategories = [
+  { id: 'ext-dev', name: 'Development & Engineering', description: 'Resources for development, debugging, and browser compatibility.', icon: 'code' },
+  { id: 'ext-data', name: 'Data & Formats', description: 'Validate data, convert encodings, and work with formats.', icon: 'data' },
+  { id: 'ext-design', name: 'Design & Images', description: 'Tools for image editing, compression, and visual design.', icon: 'image' },
+  { id: 'ext-security', name: 'Security & Privacy', description: 'Resources for security practices and privacy protection.', icon: 'security' },
+  { id: 'ext-productivity', name: 'Productivity & Office', description: 'Resources for collaboration, diagrams, and everyday productivity.', icon: 'briefcase' },
+  { id: 'ext-learning', name: 'Learning & Documentation', description: 'Technical documentation, tutorials, and learning references.', icon: 'book' },
+  { id: 'ext-open-source', name: 'Open Source & Community', description: 'Discover open source projects and technical communities.', icon: 'community' },
+  { id: 'ext-official', name: 'Web Box & Official Resources', description: 'Web Box and related official resources.', icon: 'site' },
+] as const satisfies readonly { id: string; name: string; description: string; icon: string }[]
+// Stable IDs also serve as future translation keys; display copy stays in this configuration.
+export type ExternalResourceCategory = typeof externalResourceCategories[number]
+export type ExternalResourceCategoryId = ExternalResourceCategory['id']
+export interface ExternalResource { id: string; name: string; description: string; categoryId: ExternalResourceCategoryId; url: string }
+export const getResourceCategoryById = (id: string) => externalResourceCategories.find(c => c.id === id)
+export const getResourceCategoryPath = (id: ExternalResourceCategoryId) => `/resources/${id}`
+export const getResourcesByCategory = (id: ExternalResourceCategoryId) => resources.filter(r => r.categoryId === id)
+export function getSafeResourceUrl(value: string): URL | undefined {
+  try {
+    const url = new URL(value)
+    return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password ? url : undefined
+  } catch { return undefined }
+}
 
 export const categories = ([
   { id: 'text-content', name: 'Text & Content', description: 'Make everyday words easier to work with.', shortName: 'Text', order: 1, plannedToolCount: 8, icon: 'text' },
@@ -26,15 +48,15 @@ export const tools: ToolDefinition[] = [
 ]
 // Official resource addresses checked on 2026-11-18; see docs/resources.md.
 export const resources: ExternalResource[] = [
-  { id: 'mdn', name: 'MDN Web Docs', description: 'Reference and guides for HTML, CSS, JavaScript, and Web APIs.', category: 'Documentation', url: 'https://developer.mozilla.org/en-US/' },
-  { id: 'caniuse', name: 'Can I use', description: 'Browser support tables for web platform features.', category: 'Compatibility', url: 'https://caniuse.com/' },
-  { id: 'regex101', name: 'regex101', description: 'Build, test, and explain regular expressions.', category: 'Development', url: 'https://regex101.com/' },
-  { id: 'jsonlint', name: 'JSONLint', description: 'Validate and format JSON documents.', category: 'Data', url: 'https://jsonlint.com/' },
-  { id: 'cyberchef', name: 'CyberChef', description: 'Explore recipes for encoding and data transformations.', category: 'Conversion', url: 'https://gchq.github.io/CyberChef/' },
-  { id: 'squoosh', name: 'Squoosh', description: 'Compress images and compare output settings.', category: 'Images', url: 'https://squoosh.app/' },
-  { id: 'svgomg', name: 'SVGOMG', description: 'Optimize SVG markup with a visual interface for SVGO.', category: 'Images', url: 'https://jakearchibald.github.io/svgomg/' },
-  { id: 'photopea', name: 'Photopea', description: 'Edit images with a browser-based photo editor.', category: 'Design', url: 'https://www.photopea.com/' },
-  { id: 'excalidraw', name: 'Excalidraw', description: 'Sketch diagrams on a hand-drawn-style whiteboard.', category: 'Design', url: 'https://excalidraw.com/' },
+  { id: 'mdn', name: 'MDN Web Docs', description: 'Reference and guides for HTML, CSS, JavaScript, and Web APIs.', categoryId: 'ext-learning', url: 'https://developer.mozilla.org/en-US/' },
+  { id: 'caniuse', name: 'Can I use', description: 'Browser support tables for web platform features.', categoryId: 'ext-dev', url: 'https://caniuse.com/' },
+  { id: 'regex101', name: 'regex101', description: 'Build, test, and explain regular expressions.', categoryId: 'ext-dev', url: 'https://regex101.com/' },
+  { id: 'jsonlint', name: 'JSONLint', description: 'Validate and format JSON documents.', categoryId: 'ext-data', url: 'https://jsonlint.com/' },
+  { id: 'cyberchef', name: 'CyberChef', description: 'Explore recipes for encoding and data transformations.', categoryId: 'ext-data', url: 'https://gchq.github.io/CyberChef/' },
+  { id: 'squoosh', name: 'Squoosh', description: 'Compress images and compare output settings.', categoryId: 'ext-design', url: 'https://squoosh.app/' },
+  { id: 'svgomg', name: 'SVGOMG', description: 'Optimize SVG markup with a visual interface for SVGO.', categoryId: 'ext-design', url: 'https://jakearchibald.github.io/svgomg/' },
+  { id: 'photopea', name: 'Photopea', description: 'Edit images with a browser-based photo editor.', categoryId: 'ext-design', url: 'https://www.photopea.com/' },
+  { id: 'excalidraw', name: 'Excalidraw', description: 'Sketch diagrams on a hand-drawn-style whiteboard.', categoryId: 'ext-productivity', url: 'https://excalidraw.com/' },
 ]
 export const projectUrl = 'https://github.com/songzezh/web-box'
 export function validateRegistry(cs: ToolCategory[], ts: ToolDefinition[], rs: ExternalResource[]) {
@@ -53,8 +75,8 @@ export function validateRegistry(cs: ToolCategory[], ts: ToolDefinition[], rs: E
     if (!['available', 'coming-soon'].includes(t.status)) throw new Error(`Invalid status: ${t.id}`)
   }
   for (const r of rs) {
-    const url = new URL(r.url)
-    if (url.protocol !== 'https:' || url.username || url.password) throw new Error(`Invalid resource URL: ${r.id}`)
+    if (!getResourceCategoryById(r.categoryId)) throw new Error(`Invalid resource category: ${r.categoryId}`)
+    if (!getSafeResourceUrl(r.url)) throw new Error(`Invalid resource URL: ${r.id}`)
   }
 }
 validateRegistry(categories, tools, resources)

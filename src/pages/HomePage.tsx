@@ -1,21 +1,7 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, ArrowUpRight, CaseSensitive, Braces, Binary, ShieldCheck, Clock, CodeXml, Image } from 'lucide-react'
+import { ArrowUpRight, ShieldCheck } from 'lucide-react'
 import { categories, getCategoryPath, statistics } from '../registry'
-import type { CategoryIcon, ToolCategory } from '../registry'
-
-const categoryIcons = { text: CaseSensitive, data: Braces, convert: Binary, security: ShieldCheck, time: Clock, code: CodeXml, image: Image } satisfies Record<CategoryIcon, typeof CaseSensitive>
-
-function CategoryCard({ category }: { category: ToolCategory }) {
-  const Icon = categoryIcons[category.icon]
-  return (
-    <Link className="category-card" to={getCategoryPath(category.id)}>
-      <Icon className="category-icon" size={24} strokeWidth={1.5} aria-hidden="true" />
-      <h3>{category.name}</h3>
-      <p>{category.description}</p>
-      <div className="card-bottom"><span>{category.plannedToolCount} planned tools</span><ArrowRight size={20} aria-hidden="true" /></div>
-    </Link>
-  )
-}
+import { CategoryCard } from '../components/CategoryCard'
 
 export default function HomePage() {
   return (
@@ -38,7 +24,7 @@ export default function HomePage() {
           <div><p className="eyebrow">BROWSE BY CATEGORY</p><h2 id="categories-title">Find your starting point.</h2></div>
           <p>Choose a category to explore its tools and availability.</p>
         </div>
-        <div className="category-grid">{categories.map(category => <CategoryCard key={category.id} category={category} />)}</div>
+        <div className="category-grid">{categories.map(category => <CategoryCard key={category.id} category={category} path={getCategoryPath(category.id)} count={`${category.plannedToolCount} planned tools`} />)}</div>
       </section>
       <section className="page-grid resource-entry" aria-labelledby="resource-entry-title">
         <div><p className="eyebrow">BEYOND THE TOOLBOX</p><h2 id="resource-entry-title">External resources</h2><p className="secondary">Explore the separate directory of destinations outside Web Box.</p></div>

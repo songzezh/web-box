@@ -138,14 +138,58 @@ test('navigation active state follows forward and back route transitions', async
     assert.match(html(), /aria-current="page"[^>]*>Resources<\/a>/)
   } finally { router.dispose() }
 })
-test('Resources renders nine HTTPS links with safe external navigation attributes', async () => {
+test('resource overview shows eight categories without external resource cards', async () => {
   const ResourcesPage = (await server.ssrLoadModule('/src/pages/ResourcesPage.tsx')).default
   const html = renderPage(ResourcesPage, '/resources', '*')
-  assert.equal(registry.resources.length, 9)
-  assert.equal((html.match(/target="_blank"/g) ?? []).length, 9)
-  assert.equal((html.match(/rel="noopener noreferrer"/g) ?? []).length, 9)
-  for (const resource of registry.resources) {
-    assert.equal(new URL(resource.url).protocol, 'https:')
-    assert.ok(html.includes(`href="${resource.url}"`))
+  assert.equal((html.match(/class="category-card"/g) ?? []).length, 8)
+  assert.ok(!html.includes('target="_blank"'))
+  for (const category of registry.externalResourceCategories) {
+    assert.ok(html.includes(`href="${registry.getResourceCategoryPath(category.id)}"`))
+    assert.ok(html.includes(category.name.replaceAll('&', '&amp;')))
+  }
+})
+
+test('resource categories filter lists, show empty states and preserve navigation on fresh loads', async () => {
+  const ResourcesPage = (await server.ssrLoadModule('/src/pages/ResourcesPage.tsx')).default
+  const GlobalNavigation = (await server.ssrLoadModule('/src/components/GlobalNavigation.tsx')).default
+  const Breadcrumbs = (await server.ssrLoadModule('/src/components/Breadcrumbs.tsx')).default
+  for (const category of registry.externalResourceCategories) {
+    const path = registry.getResourceCategoryPath(category.id)
+    const html = renderPage(() => createElement(ResourcesPage, { resourceCategoryId: category.id }), path, '*')
+    const resources = registry.getResourcesByCategory(category.id)
+    for (const resource of registry.resources) assert.equal(html.includes(`href="${resource.url}"`), resource.categoryId === category.id)
+    assert.equal((html.match(/target="_blank"/g) ?? []).length, resources.length)
+    assert.equal((html.match(/rel="noopener noreferrer"/g) ?? []).length, resources.length)
+    assert.equal(html.includes('No resources yet.'), resources.length === 0)
+    assert.match(html, new RegExp(`aria-current="page"[^>]*href="${path}"`))
+    assert.match(renderPage(() => createElement(GlobalNavigation, { className: 'desktop-nav' }), path, '*'), /aria-current="location"[^>]*>Resources<\/a>/)
+    assert.ok(renderPage(Breadcrumbs, path, '*').includes(`aria-current="page">${category.name.replaceAll('&', '&amp;')}`))
+  }
+  assert.ok(renderPage(() => createElement(ResourcesPage, { resourceCategoryId: 'missing' }), '/resources/missing', '*').includes('Page not found.'))
+})
+
+test('resource category history restores the selected category', async () => {
+  const ResourcesPage = (await server.ssrLoadModule('/src/pages/ResourcesPage.tsx')).default
+  const router = createMemoryRouter([
+    { path: '/resources', element: createElement(ResourcesPage) },
+    ...registry.externalResourceCategories.map(category => ({ path: registry.getResourceCategoryPath(category.id), element: createElement(ResourcesPage, { resourceCategoryId: category.id }) })),
+  ], { initialEntries: ['/resources'] })
+  const html = () => renderToStaticMarkup(createElement(RouterProvider, { router }))
+  try {
+    await router.navigate('/resources/ext-dev')
+    assert.ok(html().includes('regex101'))
+    await router.navigate('/resources/ext-security')
+    assert.ok(html().includes('No resources yet.'))
+    await router.navigate(-1)
+    assert.ok(html().includes('regex101'))
+    await router.navigate(1)
+    assert.ok(html().includes('No resources yet.'))
+  } finally { router.dispose() }
+})
+
+test('resource cards never render unsafe URLs', async () => {
+  const { ResourceCard } = await server.ssrLoadModule('/src/components/Tools.tsx')
+  for (const url of ['javascript:alert(1)', 'data:text/html,test', '//example.com', 'https://user:secret@example.com', 'invalid']) {
+    assert.equal(renderToStaticMarkup(createElement(ResourceCard, { resource: { ...registry.resources[0], url } })), '')
   }
 })

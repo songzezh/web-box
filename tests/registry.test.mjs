@@ -21,10 +21,12 @@ test('rejects unknown categories and incorrect paths', () => {
   assert.throws(() => validateRegistry(categories, [{ ...tools[0], categoryId: 'missing' }], []), /Invalid category/)
   assert.throws(() => validateRegistry(categories, [{ ...tools[0], path: '//other.example' }], []), /Invalid tool path/)
 })
-test('external resources require HTTPS without credentials', () => {
-  const resource = { id: 'example', name: 'Example', description: 'Test fixture', category: 'Test', url: 'https://example.com' }
+test('external resources require HTTP/HTTPS without credentials and a known category', () => {
+  const resource = { id: 'example', name: 'Example', description: 'Test fixture', categoryId: 'ext-dev', url: 'https://example.com' }
   assert.doesNotThrow(() => validateRegistry([], [], [resource]))
-  for (const url of ['http://example.com', 'javascript:alert(1)', 'invalid', 'https://user:secret@example.com']) {
+  assert.doesNotThrow(() => validateRegistry([], [], [{ ...resource, url: 'http://example.com' }]))
+  assert.throws(() => validateRegistry([], [], [{ ...resource, categoryId: 'missing' }]), /Invalid resource category/)
+  for (const url of ['ftp://example.com', 'javascript:alert(1)', 'invalid', 'https://user:secret@example.com']) {
     assert.throws(() => validateRegistry([], [], [{ ...resource, url }]))
   }
 })
