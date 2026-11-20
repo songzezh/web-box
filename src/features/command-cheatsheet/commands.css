@@ -1,6 +1,16 @@
-.command-sheet {
+.command-page .content-page {
+    padding-top: 24px;
+}
+
+.command-page .lead {
+    margin-top: 12px;
+    font-size: 16px;
     max-width: 1120px;
-    min-width: 0
+}
+
+.command-sheet {
+    min-width: 0;
+    margin-top: 24px;
 }
 
 .command-sheet button {
@@ -13,36 +23,28 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px
+    gap: 8px;
 }
 
 .command-sheet button:hover {
-    background: var(--cds-layer-hover)
+    background: var(--cds-layer-hover);
 }
 
 .command-sheet button:disabled {
     opacity: .5;
-    cursor: default
-}
-
-.command-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap
+    cursor: default;
 }
 
 .command-sheet label {
     display: block;
     font-size: 14px;
-    margin-bottom: 8px
+    margin-bottom: 8px;
 }
 
 .command-search {
     display: flex;
-    gap: 8px
+    min-width: 0;
+    gap: 4px;
 }
 
 .command-search input {
@@ -55,170 +57,231 @@
     background: var(--cds-layer-01);
     color: var(--cds-text-primary);
     padding: 0 16px;
-    font: inherit
+    font: inherit;
 }
 
 .command-search input::placeholder {
-    color: var(--cds-text-secondary)
-}
-
-.command-help {
-    font-size: 14px;
     color: var(--cds-text-secondary);
-    margin: 8px 0 24px
 }
 
-.command-filters {
-    display: flex;
-    overflow-x: auto;
-    gap: 4px;
-    padding: 4px 4px 8px
-}
-
-.command-filters button {
-    white-space: nowrap;
+.command-search .command-clear {
+    width: 48px;
+    padding: 0;
     flex-shrink: 0;
-    border-bottom: 3px solid transparent;
-    color: var(--cds-text-secondary)
 }
 
-.command-filters button[aria-pressed=true] {
-    border-bottom-color: var(--cds-link-primary);
-    background: var(--cds-selected);
-    color: var(--cds-text-primary)
-}
-
-.command-filters span {
-    font-size: 12px
+.command-results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
 }
 
 .command-count {
-    margin: 16px 0;
     color: var(--cds-text-secondary);
-    font-size: 14px
+    font-size: 14px;
+}
+
+.command-results-bar .command-favorite {
+    width: 48px;
+    padding: 0;
+    background: transparent;
 }
 
 .command-group {
-    margin: 32px 0
+    margin: 16px 0 24px;
 }
 
 .command-group-heading {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
     gap: 16px;
     border-bottom: 1px solid var(--cds-border-subtle);
-    padding: 0 0 16px
+    padding-bottom: 8px;
 }
 
 .command-group-heading h2 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 400;
-    margin: 0
+    margin: 0;
 }
 
-.command-group-heading>span {
+.command-group-heading > span {
     font-size: 14px;
-    color: var(--cds-text-secondary)
+    color: var(--cds-text-secondary);
 }
 
 .command-row {
-    padding: 24px 0;
+    padding: 16px 0;
     border-bottom: 1px solid var(--cds-border-subtle);
-    min-width: 0
-}
-
-.command-heading {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
-    flex-wrap: wrap
+    min-width: 0;
 }
 
 .command-heading h3 {
     font-size: 16px;
-    font-weight: 600
+    font-weight: 600;
 }
 
 .command-code {
     display: flex;
     min-width: 0;
-    margin: 12px 0 8px;
-    background: var(--cds-layer-01)
+    margin: 8px 0;
+    background: var(--cds-layer-01);
 }
 
 .command-sheet pre {
     min-width: 0;
     overflow-x: auto;
     margin: 0;
-    padding: 16px;
-    background: var(--cds-layer-01)
+    padding: 12px 16px;
+    background: var(--cds-layer-01);
 }
 
 .command-code pre {
-    flex: 1
+    flex: 1;
+    align-content: center;
 }
 
 .command-code button {
-    width: 112px;
+    width: 48px;
+    padding: 0;
     flex-shrink: 0;
-    align-self: stretch
+    align-self: stretch;
 }
 
 .command-sheet code {
     font-family: 'IBM Plex Mono', Menlo, Consolas, monospace;
     font-size: 14px;
-    letter-spacing: .16px
+    letter-spacing: .16px;
 }
 
-.command-row>p {
+.command-row > p {
     font-size: 14px;
-    color: var(--cds-text-secondary)
+    color: var(--cds-text-secondary);
+    overflow-wrap: anywhere;
 }
 
 .command-row .command-warning {
-    margin-top: 12px;
-    padding: 12px 16px;
+    margin-top: 8px;
+    padding: 8px 12px;
     border-left: 3px solid var(--cds-text-primary);
     background: var(--cds-layer-01);
-    color: var(--cds-text-primary)
+    color: var(--cds-text-primary);
 }
 
 .command-sheet summary {
     min-height: 44px;
     cursor: pointer;
     color: var(--cds-link-primary);
-    padding-top: 12px;
-    font-size: 14px
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    list-style: none;
+    width: fit-content;
+}
+
+.command-sheet summary::-webkit-details-marker {
+    display: none;
+}
+
+.command-sheet details[open] > summary svg {
+    transform: rotate(180deg);
 }
 
 .command-details {
     padding: 16px;
     background: var(--cds-layer-01);
     font-size: 14px;
-    overflow-wrap: anywhere
+    overflow-wrap: anywhere;
 }
 
 .command-details h4 {
     margin: 16px 0 8px;
-    font-weight: 600
+    font-weight: 600;
 }
 
 .command-details h4:first-child {
-    margin-top: 0
+    margin-top: 0;
 }
 
 .command-details dl {
-    margin-bottom: 12px
+    margin-bottom: 12px;
 }
 
-.command-details dl>div {
-    margin-bottom: 8px
+.command-details dl > div {
+    margin-bottom: 8px;
 }
 
 .command-details dd {
-    color: var(--cds-text-secondary)
+    color: var(--cds-text-secondary);
+}
+
+/* Use the existing page-grid maximum (1584px) instead of a second narrow container. */
+.command-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 32px;
+    align-items: start;
+}
+
+.command-content {
+    min-width: 0;
+}
+
+.command-sidebar {
+    --command-sticky-offset: calc(var(--app-header-height) + 16px);
+    position: sticky;
+    top: var(--command-sticky-offset);
+    max-height: calc(100dvh - var(--command-sticky-offset) - 16px);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    border-left: 1px solid var(--cds-border-subtle);
+}
+
+.command-sidebar h2 {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0 16px 12px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.command-mobile-categories {
+    display: none;
+}
+
+.command-category-list {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    min-height: 0;
+    padding: 8px 0;
+}
+
+.command-category-list button {
+    width: 100%;
+    justify-content: space-between;
+    text-align: left;
+    border-left: 3px solid transparent;
+    background: transparent;
+    color: var(--cds-text-primary);
+}
+
+.command-category-list button[aria-pressed=true] {
+    border-left-color: var(--cds-link-primary);
+    background: var(--cds-selected);
+}
+
+.command-category-list button span:last-child {
+    color: var(--cds-text-secondary);
+    font-size: 12px;
+}
+
+.command-category-list :focus-visible {
+    outline-offset: -4px;
 }
 
 .tool-activity {
@@ -227,7 +290,7 @@
     gap: 16px;
     margin-top: 8px;
     font-size: 14px;
-    color: var(--cds-text-secondary)
+    color: var(--cds-text-secondary);
 }
 
 .tool-activity button {
@@ -236,36 +299,48 @@
     padding: 8px 16px;
     background: var(--cds-layer-01);
     color: var(--cds-link-primary);
-    cursor: pointer
+    cursor: pointer;
 }
 
-@media(max-width:671px) {
-    .command-code button {
-        width: 80px;
-        padding: 8px
+@media(max-width: 671px) {
+    .command-page .content-page {
+        padding-top: 16px;
     }
-
-    .command-code button span {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip-path: inset(50%)
-    }
-
-    .command-search {
-        flex-wrap: wrap
-    }
-
     .command-search input {
-        flex-basis: 100%
+        padding-inline: 12px;
     }
+}
 
-    .command-group-heading {
-        align-items: baseline
+@media(max-width: 1055px) {
+    .command-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
     }
-
-    .command-toolbar button {
-        width: 100%
+    .command-sidebar {
+        display: none;
+    }
+    .command-mobile-categories {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+        min-width: 0;
+    }
+    .command-mobile-categories label {
+        margin: 0;
+        flex-shrink: 0;
+        color: var(--cds-text-secondary);
+    }
+    .command-mobile-categories select {
+        min-width: 0;
+        width: 100%;
+        max-width: 320px;
+        min-height: 48px;
+        border: 0;
+        border-bottom: 1px solid var(--cds-border-subtle);
+        padding: 8px 12px;
+        background: var(--cds-layer-01);
+        color: var(--cds-text-primary);
+        font: inherit;
     }
 }

@@ -35,5 +35,9 @@
   "cheatsheet.favorite": "收藏工具",
   "cheatsheet.unfavorite": "取消收藏",
   "cheatsheet.recent": "最近使用",
-  "cheatsheet.count": "{{count}} 条命令"
+  "cheatsheet.count": "{{count}} 条命令",
+  "cheatsheet.categories": "分类",
+  "cheatsheet.allCommands": "全部命令",
+  "cheatsheet.copyCommand": "复制命令",
+  "cheatsheet.close": "关闭"
 }

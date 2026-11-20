@@ -12,6 +12,7 @@
   font-display:swap
 }
 :root{
+  --app-header-height:48px;
   --cds-background:#fff;
   --cds-layer-01:#f4f4f4;
   --cds-layer-hover:#e8e8e8;

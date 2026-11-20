@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Copy, Star } from "lucide-react";
+import { Check, ChevronDown, Copy, Star, X } from "lucide-react";
 import { ToolPageLayout } from "../../components/Tools";
 import { useToolActivity } from "../../hooks/useToolActivity";
 import { commandCategories, commands } from "./data";
@@ -29,16 +29,6 @@ function CommandRow({ entry }: { entry: CommandEntry }) {
     <article className="command-row">
       <div className="command-heading">
         <h3>{text(entry.name)}</h3>
-        <span className="eyebrow">
-          {entry.platforms
-            .map(
-              (platform) =>
-                ({ linux: "Linux", macos: "macOS", windows: "Windows" })[
-                  platform
-                ],
-            )
-            .join(" / ")}
-        </span>
       </div>
       <div className="command-code">
         <pre>
@@ -47,17 +37,14 @@ function CommandRow({ entry }: { entry: CommandEntry }) {
         <button
           type="button"
           onClick={copy}
-          aria-label={`${t("cheatsheet.copy")}: ${entry.command}`}
-          title={t("cheatsheet.copy")}
+          aria-label={`${t(feedback === "copied" ? "cheatsheet.copied" : "cheatsheet.copyCommand")}: ${entry.command}`}
+          title={t(feedback === "copied" ? "cheatsheet.copied" : "cheatsheet.copyCommand")}
         >
           {feedback === "copied" ? (
             <Check size={18} aria-hidden="true" />
           ) : (
             <Copy size={18} aria-hidden="true" />
           )}
-          <span>
-            {t(feedback === "copied" ? "cheatsheet.copied" : "cheatsheet.copy")}
-          </span>
         </button>
       </div>
       <p>{text(entry.description)}</p>
@@ -81,12 +68,20 @@ function CommandRow({ entry }: { entry: CommandEntry }) {
           — {entry.warning ? text(entry.warning) : t("cheatsheet.cautionNote")}
         </p>
       )}
-      {entry.parameters?.length || entry.examples?.length ? (
+      {entry.parameters?.length || entry.examples?.length || entry.platforms.length < 3 ? (
         <details>
-          <summary>{t("cheatsheet.details")}</summary>
+          <summary><ChevronDown size={16} aria-hidden="true" />{t("cheatsheet.details")}</summary>
           <div className="command-details">
-            <h4>{t("cheatsheet.purpose")}</h4>
-            <p>{text(entry.description)}</p>
+        <span className="eyebrow">
+          {entry.platforms
+            .map(
+              (platform) =>
+                ({ linux: "Linux", macos: "macOS", windows: "Windows" })[
+                  platform
+                ],
+            )
+            .join(" / ")}
+        </span>
             {entry.parameters && (
               <>
                 <h4>{t("cheatsheet.parameters")}</h4>
@@ -132,12 +127,7 @@ export default function CommandCheatSheet() {
   const activity = useToolActivity("command-cheatsheet", true);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (
-        shouldFocusSearch(
-          event,
-          event.target instanceof Element ? event.target : null,
-        )
-      ) {
+      if (shouldFocusSearch(event, event.target instanceof Element ? event.target : null)) {
         event.preventDefault();
         input.current?.focus();
       }
@@ -146,110 +136,98 @@ export default function CommandCheatSheet() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
   const results = filterCommands(commands, query, category);
+  const categoryOptions = [
+    { id: "all", name: t("cheatsheet.allCommands"), count: commands.length },
+    ...commandCategories.map(item => ({
+      id: item.id,
+      name: item.name[language],
+      count: commands.filter(entry => entry.category === item.id).length,
+    })),
+  ];
   return (
-    <ToolPageLayout
-      title={t("command-cheatsheet.name")}
-      description={t("command-cheatsheet.description")}
-    >
-      <div className="command-sheet">
-        <div className="command-toolbar">
-          <p className="eyebrow">{t("cheatsheet.local")}</p>
-          <button
-            type="button"
-            aria-pressed={activity.favorite}
-            onClick={activity.toggleFavorite}
-          >
-            <Star
-              size={18}
-              fill={activity.favorite ? "currentColor" : "none"}
-              aria-hidden="true"
-            />
-            {t(
-              activity.favorite
-                ? "cheatsheet.unfavorite"
-                : "cheatsheet.favorite",
-            )}
-          </button>
-        </div>
-        <label htmlFor="command-search">{t("cheatsheet.search")}</label>
-        <div className="command-search">
-          <input
-            id="command-search"
-            ref={input}
-            type="search"
-            placeholder={t("cheatsheet.search")}
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            aria-keyshortcuts="/"
-          />
-          <button
-            type="button"
-            disabled={!query}
-            onClick={() => {
-              setQuery("");
-              input.current?.focus();
-            }}
-          >
-            {t("cheatsheet.clear")}
-          </button>
-        </div>
-        <p className="command-help">{t("cheatsheet.placeholder")}</p>
-        <div
-          className="command-filters"
-          role="group"
-          aria-label={t("cheatsheet.all")}
-        >
-          <button
-            type="button"
-            aria-pressed={category === "all"}
-            onClick={() => setCategory("all")}
-          >
-            {t("cheatsheet.all")} <span>{commands.length}</span>
-          </button>
-          {commandCategories.map((item) => (
-            <button
-              type="button"
-              key={item.id}
-              aria-pressed={category === item.id}
-              onClick={() => setCategory(item.id)}
-            >
-              {item.name[language]}{" "}
-              <span>
-                {commands.filter((entry) => entry.category === item.id).length}
-              </span>
-            </button>
-          ))}
-        </div>
-        <p className="command-count" role="status">
-          {t("cheatsheet.count", { count: results.length })}
-        </p>
-        {!results.length && (
-          <div className="empty-state">
-            <div>
-              <h2>{t("cheatsheet.empty")}</h2>
-              <p>{t("cheatsheet.emptyHelp")}</p>
+    <div className="command-page">
+      <ToolPageLayout
+        title={t("command-cheatsheet.name")}
+        description={t("command-cheatsheet.description")}
+      >
+        <div className="command-sheet command-layout">
+          <div className="command-content">
+            <label htmlFor="command-search">{t("cheatsheet.search")}</label>
+            <div className="command-search">
+              <input
+                id="command-search"
+                ref={input}
+                type="search"
+                placeholder={t("cheatsheet.search")}
+                value={query}
+                onChange={event => setQuery(event.target.value)}
+                aria-keyshortcuts="/"
+              />
+              <button
+                className="command-clear"
+                type="button"
+                aria-label={t("cheatsheet.clear")}
+                title={t("cheatsheet.clear")}
+                disabled={!query}
+                onClick={() => { setQuery(""); input.current?.focus(); }}
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
             </div>
-          </div>
-        )}
-        {commandCategories.map((item) => {
-          const entries = results.filter((entry) => entry.category === item.id);
-          return entries.length ? (
-            <section
-              className="command-group"
-              key={item.id}
-              aria-labelledby={`commands-${item.id}`}
-            >
-              <div className="command-group-heading">
-                <h2 id={`commands-${item.id}`}>{item.name[language]}</h2>
-                <span>{t("cheatsheet.count", { count: entries.length })}</span>
+            <div className="command-mobile-categories">
+              <label htmlFor="command-category-select">{t("cheatsheet.categories")}</label>
+              <select id="command-category-select" value={category} onChange={event => setCategory(event.target.value)}>
+                {categoryOptions.map(item => (
+                  <option key={item.id} value={item.id}>{item.name} ({item.count})</option>
+                ))}
+              </select>
+            </div>
+            <div className="command-results-bar">
+              <p className="command-count" role="status">{t("cheatsheet.count", { count: results.length })}</p>
+              <button
+                className="command-favorite"
+                type="button"
+                aria-pressed={activity.favorite}
+                aria-label={t(activity.favorite ? "cheatsheet.unfavorite" : "cheatsheet.favorite")}
+                title={t(activity.favorite ? "cheatsheet.unfavorite" : "cheatsheet.favorite")}
+                onClick={activity.toggleFavorite}
+              >
+                <Star size={16} fill={activity.favorite ? "currentColor" : "none"} aria-hidden="true" />
+              </button>
+            </div>
+            {!results.length && (
+              <div className="empty-state">
+                <div>
+                  <h2>{t("cheatsheet.empty")}</h2>
+                  <p>{t("cheatsheet.emptyHelp")}</p>
+                </div>
               </div>
-              {entries.map((entry) => (
-                <CommandRow key={entry.id} entry={entry} />
+            )}
+            {commandCategories.map(item => {
+              const entries = results.filter(entry => entry.category === item.id);
+              return entries.length ? (
+                <section className="command-group" key={item.id} aria-labelledby={`commands-${item.id}`}>
+                  <div className={category === "all" ? "command-group-heading" : "sr-only"}>
+                    <h2 id={`commands-${item.id}`}>{item.name[language]}</h2>
+                    <span>{t("cheatsheet.count", { count: entries.length })}</span>
+                  </div>
+                  {entries.map(entry => <CommandRow key={entry.id} entry={entry} />)}
+                </section>
+              ) : null;
+            })}
+          </div>
+          <aside className="command-sidebar" aria-labelledby="command-category-title">
+            <h2 id="command-category-title">{t("cheatsheet.categories")}</h2>
+            <nav className="command-category-list" aria-label={t("cheatsheet.categories")}>
+              {categoryOptions.map(item => (
+                <button key={item.id} type="button" aria-pressed={category === item.id} onClick={() => setCategory(item.id)}>
+                  <span>{item.name}</span><span>{item.count}</span>
+                </button>
               ))}
-            </section>
-          ) : null;
-        })}
-      </div>
-    </ToolPageLayout>
+            </nav>
+          </aside>
+        </div>
+      </ToolPageLayout>
+    </div>
   );
 }

@@ -7,7 +7,7 @@
 - `src/features/command-cheatsheet/types.ts`：双语命令、参数、示例、平台和风险类型。
 - `data.ts`：集中维护 10 个分类及 147 条命令；稳定 ID 与展示组件解耦。证书运维的 50 条静态数据位于 `certificate-commands.ts`，继续使用原有 `CommandEntry` 类型，不改变 UI 或搜索逻辑。
 - `filter.ts`：无副作用的搜索与分类过滤、快捷键判断，以及可注入 Clipboard 的复制函数。
-- `CommandCheatSheet.tsx` / `commands.css`：复用 ToolPageLayout、全局语言状态及 Carbon 主题变量；横向滚动分类、代码区域独立滚动、原生 details 渐进展开。
+- `CommandCheatSheet.tsx` / `commands.css`：复用 ToolPageLayout、全局语言状态及 Carbon 主题变量；桌面端右侧常驻分类列表、窄屏分类选择框、代码区域独立滚动及原生 details 渐进展开。
 - `src/hooks/useToolActivity.ts`：原工程仅在 README 规划收藏/最近使用，未提供实现。本次补充可复用的轻量 hook，分类卡片与工具页共享收藏状态；访问时记录最近使用，最多保留 20 个工具 ID。存储键为 `web-box:favorites` 和 `web-box:recent-tools`。存储受限时页面仍可使用。
 - 不增加依赖，不修改首页布局、主导航、语言/主题状态，不执行展示的命令。
 
@@ -101,3 +101,15 @@
 - [OpenSSL s_client](https://docs.openssl.org/3.0/man1/openssl-s_client/)
 - [JDK 8 Keytool](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html)
 - [JDK 17 Keytool](https://docs.oracle.com/en/java/javase/17/docs/specs/man/keytool.html)
+
+
+## 双栏分类导航与紧凑布局
+
+2026-11-20：桌面端使用左侧命令内容与右侧常驻分类列表，替换原生 dialog 抽屉。命令数据、搜索与复制逻辑保持不变。
+
+- 移除命令容器原有 1120px 限制，复用 `.page-grid` 的 1584px 页面最大宽度；主内容 `minmax(0, 1fr)`、分类栏 240px，两栏间距 32px。代码区域继续独立横向滚动，48px 纯图标复制按钮保持固定热区。
+- 在 Carbon 大屏断点 1056px 起显示右侧列表。分类栏 sticky 顶部偏移为共享 `--app-header-height` 加 16px；Header 同样使用该高度 token。列表高度受可用视口限制，可独立滚动，不锁定页面滚动。
+- 1056px 以下切换单栏，在搜索框附近显示有标签的原生 select，隐藏桌面分类栏。浏览器提供键盘及触屏选择交互，不保留抽屉触发器、遮罩、开关状态、焦点恢复或滚动锁。
+- 两端复用同一份 `categoryOptions`，从 `commandCategories` 及既有数据生成名称与计数，并共享唯一 `category` 状态。切换布局、语言或分类不重置搜索词，默认全部命令。
+- 复制成功后 Check 图标维持 2 秒，失败保留明确反馈；aria-label、title 随语言变化。平台、参数和示例继续渐进展开，风险说明始终可见。
+- 交互回归覆盖常驻列表筛选、原生选择框与列表状态同步、组合搜索、双语标签、复制与原有功能；实际 Sticky、移动端溢出及主题视觉仍需人工浏览器检查。

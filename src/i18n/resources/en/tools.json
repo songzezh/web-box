@@ -35,5 +35,9 @@
   "cheatsheet.favorite": "Favorite tool",
   "cheatsheet.unfavorite": "Remove favorite",
   "cheatsheet.recent": "Recently used",
-  "cheatsheet.count": "{{count}} commands"
+  "cheatsheet.count": "{{count}} commands",
+  "cheatsheet.categories": "Categories",
+  "cheatsheet.allCommands": "All commands",
+  "cheatsheet.copyCommand": "Copy command",
+  "cheatsheet.close": "Close"
 }
