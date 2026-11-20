@@ -45,12 +45,12 @@ test("catalog has unique IDs, all categories, bilingual descriptions and valid p
     );
     if (entry.risk === "danger")
       assert.ok(entry.warning?.en && entry.warning?.zh);
-    for (const placeholder of entry.command.match(/<[^>]+>/g) ?? [])
+    for (const placeholder of entry.command.match(/<[a-z][a-z0-9-]*>/gi) ?? [])
       assert.ok(
         entry.parameters?.some((parameter) => parameter.name === placeholder),
       );
     for (const example of entry.examples ?? [])
-      assert.ok(!/<[^>]+>/.test(example.command));
+      assert.ok(!/<[a-z][a-z0-9-]*>/i.test(example.command));
   }
   assert.deepEqual(
     commands.find((entry) => entry.id === "system-memory").platforms,

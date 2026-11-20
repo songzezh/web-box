@@ -1,4 +1,5 @@
 import type { CommandEntry } from './types'
+import { certificateCommands } from './certificate-commands.ts'
 
 export const commandCategories = [
   {
@@ -56,10 +57,13 @@ export const commandCategories = [
       "en": "System & Processes",
       "zh": "系统与进程"
     }
-  }
+  },
+  { id: 'openssl', name: { en: 'OpenSSL', zh: 'OpenSSL 证书运维' } },
+  { id: 'keytool', name: { en: 'Java Keytool', zh: 'Java Keytool 证书库' } }
 ] as const
 
 export const commands: CommandEntry[] = [
+  ...certificateCommands,
   {
     "id": "git-init",
     "category": "git",

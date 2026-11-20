@@ -65,7 +65,7 @@ const search = async (value) =>
     input.dispatchEvent(new dom.window.Event("input", { bubbles: true }));
   });
 test("registered route renders all commands, category navigation, metadata and local recent visit", () => {
-  assert.equal(rows().length, 97);
+  assert.equal(rows().length, 147);
   assert.match(document.title, /Command Cheat Sheet/);
   assert.ok(document.querySelector('.breadcrumbs a[href="/dev-test"]'));
   assert.deepEqual(JSON.parse(localStorage.getItem("web-box:recent-tools")), [
@@ -187,7 +187,7 @@ test("existing theme control switches themes while command content stays mounted
   const beforeTheme = document.documentElement.dataset.theme;
   await click(document.querySelector(".theme-toggle:not(.language-toggle)"));
   assert.notEqual(document.documentElement.dataset.theme, beforeTheme);
-  assert.equal(rows().length, 97);
+  assert.equal(rows().length, 147);
   assert.equal(
     document.querySelector(".command-code code").textContent,
     "git init",
