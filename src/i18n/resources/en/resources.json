@@ -30,6 +30,7 @@
   "items.squoosh.description": "Compress images and compare output settings.",
   "items.svgomg.description": "Optimize SVG markup with a visual interface for SVGO.",
   "items.photopea.description": "Edit images with a browser-based photo editor.",
+  "items.uiverse.description": "Explore community-built UI elements and copy their code.",
   "items.excalidraw.description": "Sketch diagrams on a hand-drawn-style whiteboard.",
   "resourceCount_one": "{{count}} resource",
   "resourceCount_other": "{{count}} resources",

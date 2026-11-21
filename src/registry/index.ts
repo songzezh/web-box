@@ -256,7 +256,7 @@ export const tools: ToolDefinition[] = [
     tags: ["color"],
   },
 ];
-// Official resource addresses checked on 2026-11-18; see docs/resources.md.
+// Official resource verification dates are recorded in docs/resources.md.
 export const resources: ExternalResource[] = [
   {
     id: "mdn",
@@ -314,6 +314,13 @@ export const resources: ExternalResource[] = [
     description: "Edit images with a browser-based photo editor.",
     categoryId: "ext-design",
     url: "https://www.photopea.com/",
+  },
+  {
+    id: "uiverse",
+    name: "Uiverse",
+    description: "Explore community-built UI elements and copy their code.",
+    categoryId: "ext-design",
+    url: "https://uiverse.io/",
   },
   {
     id: "excalidraw",

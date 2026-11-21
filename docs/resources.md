@@ -12,7 +12,10 @@ Selected under user authorization and checked on 2026-11-18. The official HTTPS 
 | Squoosh | Image compression | [Squoosh](https://squoosh.app/) |
 | SVGOMG | SVG optimization | [SVGOMG](https://jakearchibald.github.io/svgomg/) |
 | Photopea | Image editing | [Photopea](https://www.photopea.com/) |
+| Uiverse | Community-built UI elements and code | [Uiverse](https://uiverse.io/) |
 | Excalidraw | Diagram sketching | [Excalidraw](https://excalidraw.com/) |
+
+Uiverse was added under user authorization and its official landing page was checked on 2026-11-21.
 
 Excalidraw's purpose and official destination were also verified against its [official repository](https://github.com/excalidraw/excalidraw); CyberChef's against its [official repository](https://github.com/gchq/CyberChef).
 

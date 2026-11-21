@@ -30,6 +30,7 @@
   "items.squoosh.description": "压缩图像并比较输出设置。",
   "items.svgomg.description": "通过 SVGO 的可视化界面优化 SVG 标记。",
   "items.photopea.description": "使用浏览器中的照片编辑器编辑图像。",
+  "items.uiverse.description": "探索社区制作的 UI 元素并复制其代码。",
   "items.excalidraw.description": "在手绘风格的白板上绘制图表。",
   "resourceCount": "{{count}} 个资源",
   "listLabel": "{{name}}资源"
