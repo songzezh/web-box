@@ -59,7 +59,7 @@ test("home renders seven category destinations and no individual tool cards", ()
   assert.ok(!html.includes("category-nav"));
   assert.ok(html.includes('href="/resources"'));
   assert.ok(html.includes("<dt>Planned Tools</dt><dd>60</dd>"));
-  assert.ok(html.includes("<dt>Available Tools</dt><dd>1</dd>"));
+  assert.ok(html.includes(`<dt>Available Tools</dt><dd>${registry.statistics.available}</dd>`));
 });
 test("category routes show only their associated tools and Coming soon has no link", () => {
   for (const category of registry.categories) {

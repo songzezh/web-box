@@ -183,6 +183,15 @@ export const categories = (
 // Initial examples come from the repository README; this is not the full planned catalog.
 export const tools: ToolDefinition[] = [
   {
+    id: "keyboard-shortcuts",
+    name: "Keyboard Shortcuts",
+    description: "Explore keyboard combinations and visualize physical key presses.",
+    categoryId: "dev-test",
+    path: "/tools/keyboard-shortcuts",
+    status: "available",
+    tags: ["keyboard", "shortcuts", "mac", "windows"],
+  },
+  {
     id: "command-cheatsheet",
     name: "Command Cheat Sheet",
     description:

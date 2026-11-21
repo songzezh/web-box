@@ -13,7 +13,7 @@ import {
 test("catalog counts reflect actual metadata and availability", () => {
   assert.equal(statistics.categories, 7);
   assert.equal(statistics.registered, tools.length);
-  assert.equal(statistics.available, 1);
+  assert.equal(statistics.available, 2);
   assert.equal(statistics.resources, resources.length);
   assert.deepEqual(
     categories.map((c) => c.order),

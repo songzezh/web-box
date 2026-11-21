@@ -1,0 +1,17 @@
+.keyboard { min-width: 0; max-width: 100%; }
+.keyboard-help { color: var(--cds-text-secondary); font-size: 14px; margin-block: 16px; }
+.keyboard-scroll { max-width: 100%; overflow-x: auto; padding: 8px 4px 16px; }
+.keyboard-board { width: 100%; min-width: 880px; padding: 16px 16px 19px; border: 1px solid var(--cds-border-subtle); border-radius: 16px; background: var(--cds-layer-01); box-shadow: 0 2px 4px color-mix(in srgb, var(--cds-text-primary) 15%, transparent), 0 7px 13px -3px color-mix(in srgb, var(--cds-text-primary) 15%, transparent), inset 0 -3px 0 var(--cds-border-subtle); user-select: none; }
+.keyboard-row { display: flex; gap: 6px; margin-bottom: 8px; }
+.keyboard-row:last-child { margin-bottom: 0; }
+.keyboard-row:first-child .keyboard-key { height: 32px; }
+.keyboard-row:first-child .keyboard-key:last-child { margin-left: 16px; }
+.keyboard-key { display: flex; align-items: center; justify-content: center; min-width: 0; height: 48px; padding: 4px; border: 1px solid var(--cds-border-subtle); border-radius: 6px; background: var(--cds-background); color: var(--cds-text-primary); font-family: "IBM Plex Mono", monospace; font-size: 12px; box-shadow: 0 3px 0 var(--cds-border-subtle), inset 0 1px 0 var(--cds-layer-hover); transition: transform 100ms ease, background-color 100ms ease; }
+button.keyboard-key { cursor: pointer; }
+button.keyboard-key:hover { background: var(--cds-layer-hover); transform: translateY(-2px); }
+.keyboard-key[data-highlighted] { background: var(--cds-selected); border-color: var(--cds-focus); box-shadow: 0 3px 0 var(--cds-focus), inset 0 0 0 1px var(--cds-focus); }
+button.keyboard-key[data-highlighted]:hover { background: var(--cds-selected); }
+.keyboard-key[data-physical], button.keyboard-key[data-physical], button.keyboard-key:active { transform: translateY(3px); box-shadow: inset 0 0 0 2px var(--cds-focus); background: var(--cds-layer-hover); }
+.keyboard-key[data-highlighted][data-physical] { background: var(--cds-selected); }
+.keyboard-key:focus-visible { outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .keyboard-key { transition: none; } }

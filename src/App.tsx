@@ -21,6 +21,7 @@ import ResourcesPage from "./pages/ResourcesPage";
 import NotFound from "./pages/NotFoundPage";
 import "./App.css";
 import CommandCheatSheet from "./features/command-cheatsheet/CommandCheatSheet";
+import KeyboardShortcuts from "./features/keyboard-shortcuts/KeyboardShortcuts";
 
 function ToolPage() {
   const copy = useCatalogTranslation();
@@ -35,6 +36,7 @@ function ToolPage() {
   const tool = getToolById(toolId);
   if (!tool) return <NotFound />;
   if (tool.id === "command-cheatsheet") return <CommandCheatSheet />;
+  if (tool.id === "keyboard-shortcuts") return <KeyboardShortcuts />;
   return (
     <ToolPageLayout
       title={copy.tool(tool.id, "name")}

@@ -3,13 +3,13 @@ import '../i18n/index'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Box, Menu, Moon, Sun, X } from 'lucide-react'
+import { Box, Menu, Monitor, Moon, Sun, X } from 'lucide-react'
 import { useTheme } from '../hooks/useTheme'
 import GlobalNavigation from './GlobalNavigation'
 
 export default function Header() {
   const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme, followSystemTheme, followsSystem } = useTheme()
   const themeAction = theme === 'light' ? t('common:darkTheme') : t('common:lightTheme')
   const [open, setOpen] = useState(false)
   const header = useRef<HTMLElement>(null)
@@ -66,6 +66,7 @@ export default function Header() {
         <button type="button" className="theme-toggle" aria-label={themeAction} title={themeAction} onClick={toggleTheme}>
           {theme === 'light' ? <Moon size={20} strokeWidth={1.5} aria-hidden="true" /> : <Sun size={20} strokeWidth={1.5} aria-hidden="true" />}
         </button>
+        {!followsSystem && <button type="button" className="theme-toggle" aria-label={t('tools:keyboard.systemTheme')} title={t('tools:keyboard.systemTheme')} onClick={followSystemTheme}><Monitor size={20} strokeWidth={1.5} aria-hidden="true" /></button>}
         <button ref={toggle} type="button" className="menu-toggle" aria-label={open ? t('common:closeNavigation') : t('common:openNavigation')} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
       </div>
       {open && <GlobalNavigation id="mobile-navigation" className="mobile-nav" onNavigate={closeMenu} onBlur={event => {

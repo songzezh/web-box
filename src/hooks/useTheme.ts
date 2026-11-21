@@ -35,5 +35,10 @@ export function useTheme() {
     try { localStorage.setItem(themeKey, nextTheme) } catch { /* In-memory switching still works. */ }
   }
 
-  return { theme, toggleTheme }
+  function followSystemTheme() {
+    setPreference(null)
+    try { localStorage.removeItem(themeKey) } catch { /* In-memory preference still works. */ }
+  }
+
+  return { theme, toggleTheme, followSystemTheme, followsSystem: preference === null }
 }

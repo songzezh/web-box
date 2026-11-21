@@ -1,0 +1,5 @@
+.shortcuts-controls, .shortcuts-presets { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-block: 16px; }
+.shortcuts-controls label { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.shortcuts-controls select, .shortcuts-controls button, .shortcuts-presets button { min-height: 40px; padding: 8px 16px; color: var(--cds-text-primary); background: var(--cds-layer-01); border: 0; border-bottom: 1px solid var(--cds-border-subtle); }
+.shortcuts-controls button, .shortcuts-presets button { cursor: pointer; }
+.shortcuts-controls button:hover, .shortcuts-presets button:hover { background: var(--cds-layer-hover); }
