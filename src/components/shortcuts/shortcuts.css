@@ -1,0 +1,31 @@
+.shortcut-row button { min-height: 40px; padding: 8px; border: 0; background: var(--cds-layer-01); color: var(--cds-text-primary); cursor: pointer; }
+.shortcut-row[data-selected] { color: var(--cds-link-primary); outline: 2px solid var(--cds-link-primary); outline-offset: -2px; }
+.shortcut-row { min-width: 0; background: var(--cds-layer-01); border-bottom: 1px solid var(--cds-border-subtle); }
+.shortcut-row .shortcut-select { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: center; text-align: left; padding: 8px 12px; font-size: 14px; line-height: 1.4; }
+.shortcut-row-keys { --keyboard-key-height: 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding-block: 8px; width: 100%; }
+.shortcut-select > span { min-width: 0; overflow-wrap: anywhere; }
+.shortcut-select small { display: block; margin-top: 4px; font-size: 12px; line-height: 1.4; color: var(--cds-text-secondary); }
+.shortcut-row button:hover { background: var(--cds-layer-hover); }
+.shortcut-summary { display: flex; align-items: center; }
+.shortcut-row .shortcut-expand { flex: 0 0 40px; display: grid; place-items: center; width: 40px; height: 40px; margin-right: 4px; padding: 0; background: transparent; color: var(--cds-text-secondary); }
+.shortcut-expand svg { transition: transform 200ms ease; }
+.shortcut-expand[aria-expanded="true"] svg { transform: rotate(180deg); color: var(--cds-link-primary); }
+.shortcut-expansion { display: grid; grid-template-rows: 0fr; visibility: hidden; opacity: 0; transition: grid-template-rows 200ms ease, opacity 200ms ease, visibility 0s 200ms; }
+.shortcut-expansion[data-expanded] { grid-template-rows: 1fr; visibility: visible; opacity: 1; transition-delay: 0s; }
+.shortcut-expansion-clip { min-height: 0; overflow: hidden; }
+.shortcut-expanded-content { padding: 16px; border-top: 1px solid var(--cds-border-subtle); background: var(--cds-background); color: var(--cds-text-primary); overflow-wrap: anywhere; }
+.shortcut-expanded-content section + section { margin-top: 24px; }
+.shortcut-expanded-content h3 { font-size: 14px; font-weight: 600; margin: 0 0 8px; }
+.shortcut-expanded-content p { margin-block: 4px; font-size: 14px; }
+.shortcut-sequence { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; list-style: none; padding: 8px 0; margin: 0; }
+.shortcut-sequence li { display: flex; align-items: center; gap: 16px; min-width: 0; max-width: 100%; }
+.shortcut-sequence-step { display: grid; gap: 12px; min-width: 0; font-size: 12px; }
+.shortcut-sequence-keys { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.shortcut-sequence-keys { --keyboard-key-height: 40px; font-family: "IBM Plex Mono", monospace; }
+.shortcut-sequence-step small { color: var(--cds-text-secondary); }
+.shortcut-sequence-arrow { color: var(--cds-text-secondary); }
+@media (prefers-reduced-motion: reduce) { .shortcut-expansion, .shortcut-expand svg { transition: none; } }
+
+.shortcut-sequence.shortcut-row-keys { padding-block: 8px; gap: 10px; }
+.shortcut-row-keys .shortcut-sequence-step { gap: 0; }
+.shortcut-row-keys li { gap: 8px; }

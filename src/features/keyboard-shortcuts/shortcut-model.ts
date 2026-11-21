@@ -1,3 +1,5 @@
+import type { ShortcutSequenceStep } from '../../components/shortcuts'
+
 export const modes = ['Normal', 'Insert', 'Visual', 'Visual Block', 'Replace', 'Command-line'] as const
 export const categories = ['modes', 'navigation', 'editing', 'clipboard', 'search', 'files', 'windows', 'formatting', 'marks'] as const
 export type Mode = typeof modes[number]
@@ -12,7 +14,7 @@ export interface Shortcut {
   compatibility: 'vi-vim' | 'vim' | 'conditional'
   kind: 'chord' | 'sequence' | 'command'
 }
-export interface KeyStep { label: string; codes: string[] }
+export type KeyStep = ShortcutSequenceStep
 
 // ANSI physical keys, independent of the selected operating system.
 export function characterKeys(character: string): string[] {
@@ -22,11 +24,15 @@ export function characterKeys(character: string): string[] {
   const shifted: Record<string, string> = { '~': 'Backquote', '!': 'Digit1', '@': 'Digit2', '#': 'Digit3', '$': 'Digit4', '%': 'Digit5', '^': 'Digit6', '&': 'Digit7', '*': 'Digit8', '(': 'Digit9', ')': 'Digit0', '_': 'Minus', '+': 'Equal', '{': 'BracketLeft', '}': 'BracketRight', '|': 'Backslash', ':': 'Semicolon', '"': 'Quote', '<': 'Comma', '>': 'Period', '?': 'Slash' }
   return shifted[character] ? ['ShiftLeft', shifted[character]] : plain[character] ? [plain[character]] : []
 }
-export function shortcutSteps(shortcut: Shortcut): KeyStep[] {
+export function shortcutSteps(shortcut: Pick<Shortcut, 'keys' | 'kind'>): KeyStep[] {
   if (shortcut.keys === 'Esc') return [{ label: 'Esc', codes: ['Escape'] }]
-  if (shortcut.keys.startsWith('Ctrl+')) {
+  if (/^(Ctrl|Shift|Alt|Cmd|Meta)\+/.test(shortcut.keys)) {
     const [chord, ...rest] = shortcut.keys.split(' ')
-    return [{ label: chord, codes: ['ControlLeft', ...characterKeys(chord.slice(5))] }, ...rest.flatMap(value => [...value].map(label => ({ label, codes: characterKeys(label) }))) ]
+    const parts = chord.split('+')
+    const character = parts.pop() ?? ''
+    const modifiers: Record<string, string> = { Ctrl: 'ControlLeft', Shift: 'ShiftLeft', Alt: 'AltLeft', Cmd: 'MetaLeft', Meta: 'MetaLeft' }
+    const codes = [...new Set([...parts.map(part => modifiers[part]).filter(Boolean), ...characterKeys(character)])]
+    return [{ label: chord, codes }, ...rest.flatMap(value => [...value].map(label => ({ label, codes: characterKeys(label) }))) ]
   }
   const steps = [...shortcut.keys].map(label => ({ label, codes: characterKeys(label) }))
   if (shortcut.kind === 'command') steps.push({ label: 'Enter', codes: ['Enter'] })

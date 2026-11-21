@@ -56,10 +56,8 @@
   "shortcuts.category": "分类",
   "shortcuts.mode": "编辑模式",
   "shortcuts.compatibility": "兼容性",
-  "shortcuts.copy": "复制快捷键：{{name}}",
   "shortcuts.count": "{{count}} 条快捷键",
-  "shortcuts.steps": "按键顺序",
-  "shortcuts.instructions": "选择快捷键以查看详情与按键顺序。",
+  "shortcuts.instructions": "展开快捷键以查看详细说明和按键顺序。",
   "shortcuts.clipboardNote": "需要 Vim 编译时启用 clipboard 支持，且运行环境提供系统剪贴板。",
   "shortcuts.replaceNote": "按 r 后输入要替换成的字符。",
   "shortcuts.compatibility.vi-vim": "Vi / Vim 通用",
@@ -76,5 +74,14 @@
   "shortcuts.category.files": "文件操作",
   "shortcuts.category.windows": "窗口与缓冲区",
   "shortcuts.category.formatting": "缩进与格式化",
-  "shortcuts.category.marks": "标记与跳转"
+  "shortcuts.category.marks": "标记与跳转",
+  "shortcut.details": "详细说明",
+  "shortcut.sequence": "按键顺序",
+  "shortcut.expand": "展开详情",
+  "shortcut.collapse": "收起详情",
+  "shortcut.step": "步骤",
+  "shortcut.pressTogether": "同时按下",
+  "shortcut.pressNext": "然后按下",
+  "shortcut.press": "按下",
+  "shortcuts.generalNote": "实际效果取决于当前应用及其快捷键设置。"
 }

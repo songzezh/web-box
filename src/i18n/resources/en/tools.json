@@ -56,10 +56,8 @@
   "shortcuts.category": "Category",
   "shortcuts.mode": "Editing mode",
   "shortcuts.compatibility": "Compatibility",
-  "shortcuts.copy": "Copy shortcut: {{name}}",
   "shortcuts.count": "{{count}} shortcuts",
-  "shortcuts.steps": "Ordered key steps",
-  "shortcuts.instructions": "Select a shortcut to view its details and key sequence.",
+  "shortcuts.instructions": "Expand a shortcut to view its details and key sequence.",
   "shortcuts.clipboardNote": "Requires Vim with clipboard support and an available system clipboard provider.",
   "shortcuts.replaceNote": "Type the replacement character after r.",
   "shortcuts.compatibility.vi-vim": "Vi and Vim",
@@ -76,5 +74,14 @@
   "shortcuts.category.files": "File Operations",
   "shortcuts.category.windows": "Windows & Buffers",
   "shortcuts.category.formatting": "Indentation & Formatting",
-  "shortcuts.category.marks": "Marks & Jumps"
+  "shortcuts.category.marks": "Marks & Jumps",
+  "shortcut.details": "Details",
+  "shortcut.sequence": "Key Sequence",
+  "shortcut.expand": "Expand details",
+  "shortcut.collapse": "Collapse details",
+  "shortcut.step": "Step",
+  "shortcut.pressTogether": "Press together",
+  "shortcut.pressNext": "Then press",
+  "shortcut.press": "Press",
+  "shortcuts.generalNote": "Examples depend on the active application and its shortcut settings."
 }
