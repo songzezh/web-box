@@ -21,7 +21,7 @@
   "cheatsheet.copy": "Copy",
   "cheatsheet.copied": "Copied",
   "cheatsheet.failed": "Copy failed. Clipboard access requires a supported browser, a secure context and permission. Select the command to copy manually.",
-  "cheatsheet.details": "Show details",
+  "cheatsheet.details": "Details",
   "cheatsheet.purpose": "Purpose",
   "cheatsheet.parameters": "Parameters",
   "cheatsheet.examples": "Examples",
@@ -39,5 +39,6 @@
   "cheatsheet.categories": "Categories",
   "cheatsheet.allCommands": "All commands",
   "cheatsheet.copyCommand": "Copy command",
-  "cheatsheet.close": "Close"
+  "cheatsheet.close": "Close",
+  "cheatsheet.command": "Command"
 }

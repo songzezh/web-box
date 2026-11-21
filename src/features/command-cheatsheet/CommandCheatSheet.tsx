@@ -1,121 +1,30 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, ChevronDown, Copy, Star, X } from "lucide-react";
+import { Info, Star, X } from "lucide-react";
 import { ToolPageLayout } from "../../components/Tools";
 import { useToolActivity } from "../../hooks/useToolActivity";
 import { commandCategories, commands } from "./data";
-import { copyCommand, filterCommands, shouldFocusSearch } from "./filter";
-import type { CommandEntry, LocalizedText } from "./types";
+import { filterCommands, shouldFocusSearch } from "./filter";
+import type { CommandEntry } from "./types";
+import CommandCode from "./CommandCode";
+import CommandDetailsDialog, { CommandRiskNotice } from "./CommandDetailsDialog";
 import "./commands.css";
 
-function CommandRow({ entry }: { entry: CommandEntry }) {
+function CommandRow({ entry, onDetails }: { entry: CommandEntry; onDetails: (entry: CommandEntry, trigger: HTMLButtonElement) => void }) {
   const { t, i18n } = useTranslation("tools");
-  const text = (value: LocalizedText) =>
-    value[i18n.resolvedLanguage === "zh-CN" ? "zh" : "en"];
-  const [feedback, setFeedback] = useState<"copied" | "failed" | null>(null);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  useEffect(() => () => clearTimeout(timer.current), []);
-  const copy = async () => {
-    clearTimeout(timer.current);
-    try {
-      await copyCommand(entry.command, navigator.clipboard);
-      setFeedback("copied");
-      timer.current = setTimeout(() => setFeedback(null), 2000);
-    } catch {
-      setFeedback("failed");
-    }
-  };
-  return (
-    <article className="command-row">
-      <div className="command-heading">
-        <h3>{text(entry.name)}</h3>
-      </div>
-      <div className="command-code">
-        <pre>
-          <code>{entry.command}</code>
-        </pre>
-        <button
-          type="button"
-          onClick={copy}
-          aria-label={`${t(feedback === "copied" ? "cheatsheet.copied" : "cheatsheet.copyCommand")}: ${entry.command}`}
-          title={t(feedback === "copied" ? "cheatsheet.copied" : "cheatsheet.copyCommand")}
-        >
-          {feedback === "copied" ? (
-            <Check size={18} aria-hidden="true" />
-          ) : (
-            <Copy size={18} aria-hidden="true" />
-          )}
-        </button>
-      </div>
-      <p>{text(entry.description)}</p>
-      <span className="sr-only" role="status">
-        {feedback === "copied" ? t("cheatsheet.copied") : ""}
-      </span>
-      {feedback === "failed" && (
-        <p className="command-warning" role="alert">
-          {t("cheatsheet.failed")}
-        </p>
-      )}
-      {entry.risk !== "safe" && (
-        <p className="command-warning">
-          <strong>
-            {t(
-              entry.risk === "danger"
-                ? "cheatsheet.danger"
-                : "cheatsheet.caution",
-            )}
-          </strong>{" "}
-          — {entry.warning ? text(entry.warning) : t("cheatsheet.cautionNote")}
-        </p>
-      )}
-      {entry.parameters?.length || entry.examples?.length || entry.platforms.length < 3 ? (
-        <details>
-          <summary><ChevronDown size={16} aria-hidden="true" />{t("cheatsheet.details")}</summary>
-          <div className="command-details">
-        <span className="eyebrow">
-          {entry.platforms
-            .map(
-              (platform) =>
-                ({ linux: "Linux", macos: "macOS", windows: "Windows" })[
-                  platform
-                ],
-            )
-            .join(" / ")}
-        </span>
-            {entry.parameters && (
-              <>
-                <h4>{t("cheatsheet.parameters")}</h4>
-                <dl>
-                  {entry.parameters.map((parameter) => (
-                    <div key={parameter.name}>
-                      <dt>
-                        <code>{parameter.name}</code>
-                      </dt>
-                      <dd>{text(parameter.description)}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <p>{t("cheatsheet.placeholder")}</p>
-              </>
-            )}
-            {entry.examples && (
-              <>
-                <h4>{t("cheatsheet.examples")}</h4>
-                {entry.examples.map((example) => (
-                  <div key={example.command}>
-                    <pre>
-                      <code>{example.command}</code>
-                    </pre>
-                    <p>{text(example.description)}</p>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-        </details>
-      ) : null}
-    </article>
-  );
+  const language = i18n.resolvedLanguage === "zh-CN" ? "zh" : "en";
+  return <article className="command-row">
+    <div className="command-heading"><h3>{entry.name[language]}</h3></div>
+    <CommandCode command={entry.command} actions={
+      <button className="command-details-trigger" type="button" aria-haspopup="dialog"
+        aria-label={`${t("cheatsheet.details")}: ${entry.name[language]}`} title={t("cheatsheet.details")}
+        onClick={event => onDetails(entry, event.currentTarget)}>
+        <Info size={18} aria-hidden="true" />
+      </button>
+    } />
+    <p>{entry.description[language]}</p>
+    <CommandRiskNotice entry={entry} />
+  </article>;
 }
 
 export default function CommandCheatSheet() {
@@ -123,18 +32,19 @@ export default function CommandCheatSheet() {
   const language = i18n.resolvedLanguage === "zh-CN" ? "zh" : "en";
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
+  const [selection, setSelection] = useState<{ entry: CommandEntry; trigger: HTMLButtonElement } | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const activity = useToolActivity("command-cheatsheet", true);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (shouldFocusSearch(event, event.target instanceof Element ? event.target : null)) {
+      if (!selection && shouldFocusSearch(event, event.target instanceof Element ? event.target : null)) {
         event.preventDefault();
         input.current?.focus();
       }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, []);
+  }, [selection]);
   const results = filterCommands(commands, query, category);
   const categoryOptions = [
     { id: "all", name: t("cheatsheet.allCommands"), count: commands.length },
@@ -211,7 +121,7 @@ export default function CommandCheatSheet() {
                     <h2 id={`commands-${item.id}`}>{item.name[language]}</h2>
                     <span>{t("cheatsheet.count", { count: entries.length })}</span>
                   </div>
-                  {entries.map(entry => <CommandRow key={entry.id} entry={entry} />)}
+                  {entries.map(entry => <CommandRow key={entry.id} entry={entry} onDetails={(entry, trigger) => setSelection({ entry, trigger })} />)}
                 </section>
               ) : null;
             })}
@@ -226,6 +136,7 @@ export default function CommandCheatSheet() {
               ))}
             </nav>
           </aside>
+          {selection && <CommandDetailsDialog key={selection.entry.id} entry={selection.entry} trigger={selection.trigger} onClose={() => setSelection(null)} />}
         </div>
       </ToolPageLayout>
     </div>

@@ -30,6 +30,9 @@ before(async () => {
     removeEventListener() {},
   });
   window.scrollTo = () => {};
+  // jsdom does not implement the browser's native dialog top layer.
+  dom.window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
+  dom.window.HTMLDialogElement.prototype.close = function () { this.open = false; };
   server = await createServer({
     server: { middlewareMode: true, hmr: false },
     appType: "custom",
@@ -142,11 +145,15 @@ test("copy success, denied and unavailable feedback; details and dangerous warni
   });
   await click(document.querySelector(".command-code button"));
   assert.ok(document.querySelector('[role="alert"]'));
-  const details = document.querySelector("details");
-  await click(details.querySelector("summary"));
-  assert.equal(details.open, true);
-  await click(details.querySelector("summary"));
-  assert.equal(details.open, false);
+  assert.equal(document.querySelector("details"), null);
+  assert.equal(document.querySelectorAll(".command-details-trigger").length, 147);
+  await click(document.querySelector(".command-details-trigger"));
+  assert.equal(document.querySelector(".command-dialog").open, true);
+  assert.equal(document.querySelector("#command-dialog-title").textContent, "Initialize repository");
+  assert.equal(document.querySelector("#command-parameters-title"), null);
+  assert.equal(document.querySelector("#command-examples-title"), null);
+  await click(document.querySelector(".command-dialog-close"));
+  assert.equal(document.querySelector(".command-dialog"), null);
   assert.match(
     document.querySelector(".command-sheet").textContent,
     /Permanently discards/,
@@ -251,4 +258,56 @@ test("mobile selection shares category state, search and translated names with t
   assert.equal(select.value, "all");
   await search("");
   assert.equal(rows().length, 147);
+});
+
+test("details dialog preserves filtering, restores focus and scroll, and copies command/examples independently", async () => {
+  await chooseCategory(1);
+  await search("git switch -c");
+  const trigger = document.querySelector(".command-details-trigger");
+  document.body.style.overflow = "scroll";
+  const scrollPosition = window.scrollY;
+  let copied = [];
+  Object.defineProperty(navigator, "clipboard", {
+    value: { writeText: async value => copied.push(value) }, configurable: true,
+  });
+  trigger.focus();
+  await click(trigger);
+  const dialog = document.querySelector(".command-dialog");
+  assert.equal(document.querySelectorAll("dialog").length, 1);
+  assert.equal(document.activeElement.id, "command-dialog-title");
+  assert.equal(document.body.style.overflow, "hidden");
+  assert.match(document.querySelector("#command-parameters-title").textContent, /Parameters/);
+  assert.match(dialog.textContent, /<branch-name>/);
+  assert.match(document.querySelector("#command-examples-title").textContent, /Examples/);
+  assert.match(dialog.textContent, /feature\/login/);
+  assert.deepEqual(copied, []); // Details does not copy.
+  await click(dialog.querySelector(".command-copy"));
+  await click(dialog.querySelector(".command-example .command-copy"));
+  assert.deepEqual(copied, ["git switch -c <branch-name>", "git switch -c feature/login"]);
+  await act(async () => dialog.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "/", bubbles: true })));
+  assert.notEqual(document.activeElement.id, "command-search");
+  await act(async () => i18n.changeLanguage("zh-CN"));
+  assert.match(document.querySelector("#command-parameters-title").textContent, /参数说明/);
+  assert.equal(document.querySelector(".command-dialog-close").getAttribute("aria-label"), "关闭");
+  assert.match(dialog.querySelector(".command-copy").getAttribute("aria-label"), /已复制/);
+  await act(async () => dialog.dispatchEvent(new dom.window.Event("cancel", { cancelable: true })));
+  assert.equal(document.querySelector(".command-dialog"), null);
+  assert.equal(document.body.style.overflow, "scroll");
+  assert.equal(document.activeElement, trigger);
+  assert.equal(window.scrollY, scrollPosition);
+  assert.equal(document.querySelector("#command-search").value, "git switch -c");
+  assert.equal(document.querySelector("#command-category-select").value, "git");
+  await click(trigger);
+  const reopened = document.querySelector(".command-dialog");
+  await act(async () => reopened.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true, clientX: -1, clientY: -1 })));
+  assert.equal(document.querySelector(".command-dialog"), null);
+  assert.equal(document.activeElement, trigger);
+  await search("git reset --hard");
+  await click(document.querySelector(".command-details-trigger"));
+  assert.match(document.querySelector(".command-dialog .command-warning").textContent, /永久丢弃/);
+  await click(document.querySelector(".command-dialog-close"));
+  await act(async () => i18n.changeLanguage("en"));
+  await search("");
+  await chooseCategory(0);
+  document.body.style.overflow = "";
 });

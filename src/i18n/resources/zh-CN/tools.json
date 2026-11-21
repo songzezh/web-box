@@ -39,5 +39,6 @@
   "cheatsheet.categories": "分类",
   "cheatsheet.allCommands": "全部命令",
   "cheatsheet.copyCommand": "复制命令",
-  "cheatsheet.close": "关闭"
+  "cheatsheet.close": "关闭",
+  "cheatsheet.command": "命令"
 }

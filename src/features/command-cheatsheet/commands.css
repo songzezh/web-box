@@ -10,7 +10,7 @@
 
 .command-sheet {
     min-width: 0;
-    margin-top: 24px;
+    margin-top: 16px;
 }
 
 .command-sheet button {
@@ -74,7 +74,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 48px;
+    min-height: 40px;
 }
 
 .command-count {
@@ -83,13 +83,18 @@
 }
 
 .command-results-bar .command-favorite {
-    width: 48px;
+    width: 40px;
+    min-height: 40px;
     padding: 0;
     background: transparent;
 }
 
 .command-group {
-    margin: 16px 0 24px;
+    margin: 16px 0 0;
+}
+
+.command-results-bar + .command-group {
+    margin-top: 0;
 }
 
 .command-group-heading {
@@ -98,12 +103,13 @@
     justify-content: space-between;
     gap: 16px;
     border-bottom: 1px solid var(--cds-border-subtle);
-    padding-bottom: 8px;
+    padding-bottom: 4px;
 }
 
 .command-group-heading h2 {
     font-size: 20px;
     font-weight: 400;
+    line-height: 1.4;
     margin: 0;
 }
 
@@ -113,20 +119,23 @@
 }
 
 .command-row {
-    padding: 16px 0;
+    padding: 8px 0;
     border-bottom: 1px solid var(--cds-border-subtle);
     min-width: 0;
 }
 
 .command-heading h3 {
+    margin: 0;
     font-size: 16px;
     font-weight: 600;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
 }
 
 .command-code {
     display: flex;
     min-width: 0;
-    margin: 8px 0;
+    margin: 4px 0;
     background: var(--cds-layer-01);
 }
 
@@ -134,7 +143,8 @@
     min-width: 0;
     overflow-x: auto;
     margin: 0;
-    padding: 12px 16px;
+    padding: 6px 12px;
+    line-height: 1.4;
     background: var(--cds-layer-01);
 }
 
@@ -144,10 +154,11 @@
 }
 
 .command-code button {
-    width: 48px;
+    width: 40px;
+    min-height: 40px;
     padding: 0;
     flex-shrink: 0;
-    align-self: stretch;
+    align-self: center;
 }
 
 .command-sheet code {
@@ -157,12 +168,14 @@
 }
 
 .command-row > p {
+    margin: 0;
     font-size: 14px;
+    line-height: 1.4;
     color: var(--cds-text-secondary);
     overflow-wrap: anywhere;
 }
 
-.command-row .command-warning {
+.command-sheet .command-warning {
     margin-top: 8px;
     padding: 8px 12px;
     border-left: 3px solid var(--cds-text-primary);
@@ -170,52 +183,109 @@
     color: var(--cds-text-primary);
 }
 
-.command-sheet summary {
-    min-height: 44px;
-    cursor: pointer;
-    color: var(--cds-link-primary);
+.command-actions {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     gap: 4px;
-    font-size: 14px;
-    list-style: none;
-    width: fit-content;
 }
 
-.command-sheet summary::-webkit-details-marker {
-    display: none;
+.command-dialog {
+    position: fixed;
+    inset: 0;
+    width: min(680px, calc(100% - 32px));
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-background);
+    color: var(--cds-text-primary);
+    overflow: hidden;
 }
 
-.command-sheet details[open] > summary svg {
-    transform: rotate(180deg);
+.command-dialog[open] {
+    display: flex;
+    flex-direction: column;
 }
 
-.command-details {
+.command-dialog::backdrop {
+    background: color-mix(in srgb, var(--cds-header) 45%, transparent);
+}
+
+.command-dialog-heading {
+    display: flex;
+    flex-shrink: 0;
+    align-items: start;
+    justify-content: space-between;
+    gap: 16px;
     padding: 16px;
-    background: var(--cds-layer-01);
-    font-size: 14px;
+    border-bottom: 1px solid var(--cds-border-subtle);
+}
+
+.command-dialog-heading h2 {
+    margin: 0;
+    min-width: 0;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.35;
     overflow-wrap: anywhere;
 }
 
-.command-details h4 {
-    margin: 16px 0 8px;
+.command-dialog-heading .command-dialog-close {
+    width: 48px;
+    padding: 0;
+    flex-shrink: 0;
+    background: transparent;
+}
+
+.command-dialog-body {
+    padding: 16px;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.command-dialog-body p,
+.command-dialog-body dl,
+.command-dialog-body dd {
+    margin: 0;
+}
+
+.command-dialog-body .eyebrow {
+    margin-top: 4px;
+}
+
+.command-dialog-body h3 {
+    margin: 16px 0 4px;
+    font-size: 16px;
+    line-height: 1.35;
     font-weight: 600;
 }
 
-.command-details h4:first-child {
-    margin-top: 0;
+.command-parameters > div {
+    display: grid;
+    grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
+    gap: 4px 12px;
+    margin-top: 4px;
 }
 
-.command-details dl {
-    margin-bottom: 12px;
-}
-
-.command-details dl > div {
-    margin-bottom: 8px;
-}
-
-.command-details dd {
+.command-parameters dd,
+.command-dialog-help,
+.command-example > p {
     color: var(--cds-text-secondary);
+}
+
+.command-dialog-body .command-dialog-help,
+.command-example + .command-example {
+    margin-top: 8px;
+}
+
+.command-dialog :focus-visible {
+    outline-offset: -4px;
 }
 
 /* Use the existing page-grid maximum (1584px) instead of a second narrow container. */
@@ -342,5 +412,25 @@
         background: var(--cds-layer-01);
         color: var(--cds-text-primary);
         font: inherit;
+    }
+}
+
+/* Keep generous touch targets without imposing them on the desktop list. */
+@media(max-width: 671px), (pointer: coarse) {
+    .command-code button,
+    .command-results-bar .command-favorite {
+        width: 48px;
+        min-height: 48px;
+    }
+}
+
+@media(max-width: 671px) {
+    .command-dialog-heading,
+    .command-dialog-body {
+        padding: 12px;
+    }
+    .command-parameters > div {
+        grid-template-columns: minmax(0, 1fr);
+        margin-top: 8px;
     }
 }
