@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { X } from "lucide-react";
 import CommandCode from "./CommandCode";
+import TerminalCard from "./TerminalCard";
 import { commandCategories } from "./data";
 import type { CommandEntry } from "./types";
 
@@ -41,10 +42,14 @@ export default function CommandDetailsDialog({ entry, trigger, onClose }: {
     };
   }, [trigger]);
   const category = commandCategories.find(item => item.id === entry.category);
-  return <dialog ref={dialog} className="command-dialog" aria-labelledby="command-dialog-title"
+  return <dialog ref={dialog} className="command-dialog" aria-modal="true" aria-labelledby="command-dialog-title"
     aria-describedby="command-dialog-description"
     onCancel={event => { event.preventDefault(); onClose(); }}
-    onClose={onClose}
+    onClose={event => {
+      // close() queues its event. StrictMode may already have reopened this
+      // dialog after an effect cleanup, so ignore that stale close event.
+      if (!event.currentTarget.open) onClose();
+    }}
     onClick={event => {
       if (event.target !== event.currentTarget) return;
       const bounds = event.currentTarget.getBoundingClientRect();
@@ -59,8 +64,7 @@ export default function CommandDetailsDialog({ entry, trigger, onClose }: {
     <div className="command-dialog-body">
       <p id="command-dialog-description">{entry.description[language]}</p>
       <p className="eyebrow">{category?.name[language]}{category && " · "}{entry.platforms.map(platform => ({ linux: "Linux", macos: "macOS", windows: "Windows" })[platform]).join(" / ")}</p>
-      <h3>{t("cheatsheet.command")}</h3>
-      <CommandCode command={entry.command} />
+      <TerminalCard command={entry.command} />
       {entry.parameters?.length ? <section aria-labelledby="command-parameters-title">
         <h3 id="command-parameters-title">{t("cheatsheet.parameters")}</h3>
         <dl className="command-parameters">{entry.parameters.map(parameter => <div key={parameter.name}>
@@ -71,7 +75,7 @@ export default function CommandDetailsDialog({ entry, trigger, onClose }: {
       {entry.examples?.length ? <section aria-labelledby="command-examples-title">
         <h3 id="command-examples-title">{t("cheatsheet.examples")}</h3>
         {entry.examples.map(example => <div className="command-example" key={example.command}>
-          <CommandCode command={example.command} /><p>{example.description[language]}</p>
+          <p>{example.description[language]}</p><CommandCode command={example.command} />
         </div>)}
       </section> : null}
       <CommandRiskNotice entry={entry} />

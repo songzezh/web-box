@@ -2,7 +2,7 @@ import { before, after, test } from "node:test";
 import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
 import { createServer } from "vite";
-import { createElement, act } from "react";
+import { createElement, act, StrictMode } from "react";
 import { MemoryRouter } from "react-router-dom";
 let server, dom, root, App, i18n;
 before(async () => {
@@ -32,7 +32,12 @@ before(async () => {
   window.scrollTo = () => {};
   // jsdom does not implement the browser's native dialog top layer.
   dom.window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
-  dom.window.HTMLDialogElement.prototype.close = function () { this.open = false; };
+  dom.window.HTMLDialogElement.prototype.close = function () {
+    const wasOpen = this.open;
+    this.open = false;
+    // Match native close(): the close event is queued, not dispatched inline.
+    if (wasOpen) queueMicrotask(() => this.dispatchEvent(new dom.window.Event("close")));
+  };
   server = await createServer({
     server: { middlewareMode: true, hmr: false },
     appType: "custom",
@@ -43,11 +48,11 @@ before(async () => {
   root = createRoot(document.getElementById("root"));
   await act(async () =>
     root.render(
-      createElement(
+      createElement(StrictMode, null, createElement(
         MemoryRouter,
         { initialEntries: ["/tools/command-cheatsheet"] },
         createElement(App),
-      ),
+      )),
     ),
   );
 });
@@ -71,7 +76,7 @@ const search = async (value) =>
     input.dispatchEvent(new dom.window.Event("input", { bubbles: true }));
   });
 test("registered route renders all commands, category navigation, metadata and local recent visit", () => {
-  assert.equal(rows().length, 147);
+  assert.equal(rows().length, 22);
   assert.match(document.title, /Command Cheat Sheet/);
   assert.ok(document.querySelector('.breadcrumbs a[href="/dev-test"]'));
   assert.deepEqual(JSON.parse(localStorage.getItem("web-box:recent-tools")), [
@@ -80,7 +85,7 @@ test("registered route renders all commands, category navigation, metadata and l
   assert.ok(document.querySelector('.desktop-nav a[aria-current="location"]'));
 });
 test("live filtering, clear, empty state and shortcut work together", async () => {
-  await chooseCategory(1);
+  await chooseCategory(0);
   assert.equal(rows().length, 22);
   await search("工作区状态");
   assert.equal(rows().length, 1);
@@ -146,7 +151,7 @@ test("copy success, denied and unavailable feedback; details and dangerous warni
   await click(document.querySelector(".command-code button"));
   assert.ok(document.querySelector('[role="alert"]'));
   assert.equal(document.querySelector("details"), null);
-  assert.equal(document.querySelectorAll(".command-details-trigger").length, 147);
+  assert.equal(document.querySelectorAll(".command-details-trigger").length, 22);
   await click(document.querySelector(".command-details-trigger"));
   assert.equal(document.querySelector(".command-dialog").open, true);
   assert.equal(document.querySelector("#command-dialog-title").textContent, "Initialize repository");
@@ -193,7 +198,7 @@ test("existing theme control switches themes while command content stays mounted
   const beforeTheme = document.documentElement.dataset.theme;
   await click(document.querySelector(".theme-toggle:not(.language-toggle)"));
   assert.notEqual(document.documentElement.dataset.theme, beforeTheme);
-  assert.equal(rows().length, 147);
+  assert.equal(rows().length, 22);
   assert.equal(
     document.querySelector(".command-code code").textContent,
     "git init",
@@ -209,13 +214,15 @@ test("persistent categories filter without a drawer or background scroll lock", 
   assert.ok(sidebar);
   assert.equal(document.querySelector(".command-content").parentElement, sidebar.parentElement);
   const buttons = sidebar.querySelectorAll("button");
-  assert.equal(buttons.length, 11);
+  assert.equal(buttons.length, 10);
+  assert.equal(document.querySelector('option[value="all"]'), null);
+  assert.doesNotMatch(sidebar.textContent, /All commands/);
   assert.equal(buttons[0].getAttribute("aria-pressed"), "true");
   document.body.style.overflow = "scroll";
   await search("verify");
-  await chooseCategory(9); // OpenSSL, generated from the catalog.
+  await chooseCategory(8); // OpenSSL, generated from the catalog.
   assert.equal(document.querySelector("#command-search").value, "verify");
-  assert.equal(buttons[9].getAttribute("aria-pressed"), "true");
+  assert.equal(buttons[8].getAttribute("aria-pressed"), "true");
   assert.equal(buttons[0].getAttribute("aria-pressed"), "false");
   assert.equal(document.querySelector("#command-category-select").value, "openssl");
   assert.equal(document.body.style.overflow, "scroll");
@@ -245,7 +252,7 @@ test("mobile selection shares category state, search and translated names with t
     select.dispatchEvent(new dom.window.Event("change", { bubbles: true }));
   });
   assert.equal(document.querySelector("#command-search").value, "p12");
-  assert.equal(buttons[10].getAttribute("aria-pressed"), "true");
+  assert.equal(buttons[9].getAttribute("aria-pressed"), "true");
   assert.ok(rows().length > 0);
   assert.ok([...document.querySelectorAll(".command-code code")].every(code => code.textContent.startsWith("keytool ")));
   assert.match(document.querySelector(".command-code button").getAttribute("aria-label"), /复制命令/);
@@ -253,15 +260,15 @@ test("mobile selection shares category state, search and translated names with t
   await act(async () => i18n.changeLanguage("en"));
   assert.equal(select.value, "keytool");
   assert.equal(document.querySelector(".command-sidebar h2").textContent, "Categories");
-  assert.match(select.options[0].textContent, /All commands/);
+  assert.match(select.options[0].textContent, /Git/);
   await chooseCategory(0);
-  assert.equal(select.value, "all");
+  assert.equal(select.value, "git");
   await search("");
-  assert.equal(rows().length, 147);
+  assert.equal(rows().length, 22);
 });
 
 test("details dialog preserves filtering, restores focus and scroll, and copies command/examples independently", async () => {
-  await chooseCategory(1);
+  await chooseCategory(0);
   await search("git switch -c");
   const trigger = document.querySelector(".command-details-trigger");
   document.body.style.overflow = "scroll";
@@ -274,6 +281,16 @@ test("details dialog preserves filtering, restores focus and scroll, and copies 
   await click(trigger);
   const dialog = document.querySelector(".command-dialog");
   assert.equal(document.querySelectorAll("dialog").length, 1);
+  assert.equal(dialog.getAttribute("aria-modal"), "true");
+  const terminal = dialog.querySelector(".terminal-card");
+  assert.equal(dialog.querySelectorAll(".terminal-card").length, 1);
+  assert.equal(terminal.querySelectorAll(".terminal-dot").length, 3);
+  assert.equal(terminal.querySelector(".terminal-dots").getAttribute("aria-hidden"), "true");
+  assert.equal(terminal.querySelector(".terminal-dots button"), null);
+  assert.equal(terminal.querySelector(".terminal-shell").textContent, "bash");
+  assert.equal(terminal.querySelector(".terminal-prompt").textContent, "$ ");
+  assert.equal(terminal.querySelector("code").textContent, "git switch -c <branch-name>");
+  assert.equal(dialog.querySelector(".command-example .terminal-prompt"), null);
   assert.equal(document.activeElement.id, "command-dialog-title");
   assert.equal(document.body.style.overflow, "hidden");
   assert.match(document.querySelector("#command-parameters-title").textContent, /Parameters/);
@@ -284,6 +301,16 @@ test("details dialog preserves filtering, restores focus and scroll, and copies 
   await click(dialog.querySelector(".command-copy"));
   await click(dialog.querySelector(".command-example .command-copy"));
   assert.deepEqual(copied, ["git switch -c <branch-name>", "git switch -c feature/login"]);
+  assert.ok(copied.every(value => !value.startsWith("$")));
+  Object.defineProperty(navigator, "clipboard", {
+    value: { writeText: async () => { throw Error("denied"); } }, configurable: true,
+  });
+  await click(terminal.querySelector(".command-copy"));
+  assert.match(terminal.querySelector('[role="alert"]').textContent, /Copy failed/);
+  Object.defineProperty(navigator, "clipboard", {
+    value: { writeText: async value => copied.push(value) }, configurable: true,
+  });
+  await click(terminal.querySelector(".command-copy"));
   await act(async () => dialog.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "/", bubbles: true })));
   assert.notEqual(document.activeElement.id, "command-search");
   await act(async () => i18n.changeLanguage("zh-CN"));
@@ -310,4 +337,24 @@ test("details dialog preserves filtering, restores focus and scroll, and copies 
   await search("");
   await chooseCategory(0);
   document.body.style.overflow = "";
+});
+
+test("StrictMode and delayed native close events do not dismiss an open details modal", async () => {
+  const trigger = document.querySelector(".command-details-trigger");
+  await click(trigger);
+  const dialog = document.querySelector(".command-dialog");
+  assert.ok(dialog?.open);
+  assert.equal(document.activeElement.id, "command-dialog-title");
+  await act(async () => dialog.dispatchEvent(new dom.window.Event("close")));
+  assert.equal(document.querySelector(".command-dialog"), dialog);
+  assert.equal(document.body.style.overflow, "hidden");
+  // A genuine native close must still synchronize the page selection state.
+  await act(async () => dialog.close());
+  assert.equal(document.querySelector(".command-dialog"), null);
+  assert.equal(document.activeElement, trigger);
+  assert.notEqual(document.body.style.overflow, "hidden");
+  await click(trigger);
+  assert.ok(document.querySelector(".command-dialog")?.open);
+  await click(document.querySelector(".command-dialog-close"));
+  assert.equal(document.querySelector(".command-dialog"), null);
 });

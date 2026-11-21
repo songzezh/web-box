@@ -31,7 +31,7 @@ export default function CommandCheatSheet() {
   const { t, i18n } = useTranslation("tools");
   const language = i18n.resolvedLanguage === "zh-CN" ? "zh" : "en";
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState<string>(commandCategories[0].id);
   const [selection, setSelection] = useState<{ entry: CommandEntry; trigger: HTMLButtonElement } | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const activity = useToolActivity("command-cheatsheet", true);
@@ -46,14 +46,11 @@ export default function CommandCheatSheet() {
     return () => document.removeEventListener("keydown", onKey);
   }, [selection]);
   const results = filterCommands(commands, query, category);
-  const categoryOptions = [
-    { id: "all", name: t("cheatsheet.allCommands"), count: commands.length },
-    ...commandCategories.map(item => ({
+  const categoryOptions = commandCategories.map(item => ({
       id: item.id,
       name: item.name[language],
       count: commands.filter(entry => entry.category === item.id).length,
-    })),
-  ];
+  }));
   return (
     <div className="command-page">
       <ToolPageLayout
@@ -117,7 +114,7 @@ export default function CommandCheatSheet() {
               const entries = results.filter(entry => entry.category === item.id);
               return entries.length ? (
                 <section className="command-group" key={item.id} aria-labelledby={`commands-${item.id}`}>
-                  <div className={category === "all" ? "command-group-heading" : "sr-only"}>
+                  <div className="sr-only">
                     <h2 id={`commands-${item.id}`}>{item.name[language]}</h2>
                     <span>{t("cheatsheet.count", { count: entries.length })}</span>
                   </div>

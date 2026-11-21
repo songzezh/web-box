@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Check, Copy } from "lucide-react";
 import { copyCommand } from "./filter";
 
-export default function CommandCode({ command, actions }: { command: string; actions?: ReactNode }) {
+export default function CommandCode({ command, actions, prompt = false }: { command: string; actions?: ReactNode; prompt?: boolean }) {
   const { t } = useTranslation("tools");
   const [feedback, setFeedback] = useState<"copied" | "failed" | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -22,7 +22,7 @@ export default function CommandCode({ command, actions }: { command: string; act
   const label = t(feedback === "copied" ? "cheatsheet.copied" : "cheatsheet.copyCommand");
   return <>
     <div className="command-code">
-      <pre><code>{command}</code></pre>
+      <pre>{prompt && <span className="terminal-prompt" aria-hidden="true">$ </span>}<code>{command}</code></pre>
       <div className="command-actions">
         <button className="command-copy" type="button" onClick={copy} aria-label={`${label}: ${command}`} title={label}>
           {feedback === "copied" ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}

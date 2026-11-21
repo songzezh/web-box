@@ -195,7 +195,7 @@
     inset: 0;
     width: min(680px, calc(100% - 32px));
     max-width: none;
-    max-height: calc(100dvh - 32px);
+    max-height: min(90dvh, calc(100dvh - 32px));
     margin: auto;
     padding: 0;
     border: 1px solid var(--cds-border-subtle);
@@ -433,4 +433,83 @@
         grid-template-columns: minmax(0, 1fr);
         margin-top: 8px;
     }
+}
+
+/* A self-contained terminal palette stays dark in both application themes. */
+.terminal-card {
+    --terminal-background: var(--cds-header);
+    --terminal-text: var(--cds-header-text);
+    --terminal-muted: var(--cds-header-muted);
+    --terminal-red: #fa4d56;
+    --terminal-yellow: #f1c21b;
+    --terminal-green: #6fdc8c;
+    margin-top: 16px;
+    padding: 16px;
+    min-width: 0;
+    border-radius: 8px;
+    background: var(--terminal-background);
+    color: var(--terminal-text);
+    font-family: 'IBM Plex Mono', Menlo, Consolas, monospace;
+}
+
+.terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.terminal-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.terminal-dot-red { background: var(--terminal-red); }
+.terminal-dot-yellow { background: var(--terminal-yellow); }
+.terminal-dot-green { background: var(--terminal-green); }
+
+.terminal-shell {
+    color: var(--terminal-muted);
+    font-size: 12px;
+}
+
+.terminal-card .command-code {
+    margin: 0;
+    background: transparent;
+}
+
+.terminal-card pre {
+    padding: 6px 0;
+    background: transparent;
+    color: var(--terminal-green);
+}
+
+.terminal-prompt {
+    user-select: none;
+}
+
+.command-sheet .terminal-card button {
+    background: transparent;
+    color: var(--terminal-text);
+}
+
+.command-sheet .terminal-card button:hover {
+    background: var(--cds-header-hover);
+}
+
+.terminal-card :focus-visible {
+    outline-color: var(--terminal-text);
+}
+
+.command-dialog-body section > h3 {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--cds-border-subtle);
+    margin-bottom: 8px;
 }
