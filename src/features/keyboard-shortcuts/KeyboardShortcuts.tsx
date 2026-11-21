@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Star, Copy } from 'lucide-react'
+import { Copy } from 'lucide-react'
 import { ToolPageLayout } from '../../components/Tools'
+import { KeyboardKey } from '../../components/keyboard'
 import { vimShortcuts } from './vim-data'
 import { categories, modes, matchesShortcut, shortcutSteps } from './shortcut-model'
 import type { Shortcut } from './shortcut-model'
@@ -11,10 +12,6 @@ const combinations = [
   { id: 'search', keys: ['KeyK'] }, { id: 'copy', keys: ['KeyC'] },
   { id: 'paste', keys: ['KeyV'] }, { id: 'undo', keys: ['KeyZ'] },
 ] as const
-const storageKey = 'web-box-shortcut-favorites'
-function readFavorites(): string[] {
-  try { const value: unknown = JSON.parse(localStorage.getItem(storageKey) ?? '[]'); return Array.isArray(value) ? value.filter((id): id is string => typeof id === 'string') : [] } catch { return [] }
-}
 export default function KeyboardShortcuts() {
   const { t, i18n } = useTranslation('tools')
   const [platform, setPlatform] = useState<'windows' | 'mac'>('windows')
@@ -24,17 +21,10 @@ export default function KeyboardShortcuts() {
   const [mode, setMode] = useState('')
   const [compatibility, setCompatibility] = useState('')
   const [query, setQuery] = useState('')
-  const [favorites, setFavorites] = useState(readFavorites)
-  const [onlyFavorites, setOnlyFavorites] = useState(false)
   const [message, setMessage] = useState('')
   const language = i18n.resolvedLanguage === 'zh-CN' ? 'zh-CN' : 'en'
   const steps = selected ? shortcutSteps(selected) : []
-  const visible = vimShortcuts.filter(item => (!category || item.category === category || item.relatedCategories?.some(value => value === category)) && (!mode || item.modes.includes(mode as typeof modes[number]) || item.targetMode === mode) && (!compatibility || item.compatibility === compatibility) && (!onlyFavorites || favorites.includes(item.id)) && matchesShortcut(item, query))
-  function toggleFavorite(id: string) {
-    const next = favorites.includes(id) ? favorites.filter(value => value !== id) : [...favorites, id]
-    setFavorites(next)
-    try { localStorage.setItem(storageKey, JSON.stringify(next)) } catch { setMessage(t('shortcuts.storageFailed')) }
-  }
+  const visible = vimShortcuts.filter(item => (!category || item.category === category || item.relatedCategories?.some(value => value === category)) && (!mode || item.modes.includes(mode as typeof modes[number]) || item.targetMode === mode) && (!compatibility || item.compatibility === compatibility) && matchesShortcut(item, query))
   async function copy(keys: string) {
     try { await navigator.clipboard.writeText(keys); setMessage(t('cheatsheet.copied')) } catch { setMessage(t('cheatsheet.failed')) }
   }
@@ -51,7 +41,6 @@ export default function KeyboardShortcuts() {
         <label>{t('shortcuts.category')}<select value={category} onChange={event => setCategory(event.target.value)}><option value="">{t('cheatsheet.all')}</option>{categories.map(value => <option key={value} value={value}>{t(`shortcuts.category.${value}`)}</option>)}</select></label>
         <label>{t('shortcuts.mode')}<select value={mode} onChange={event => setMode(event.target.value)}><option value="">{t('cheatsheet.all')}</option>{modes.map(value => <option key={value}>{value}</option>)}</select></label>
         <label>{t('shortcuts.compatibility')}<select value={compatibility} onChange={event => setCompatibility(event.target.value)}><option value="">{t('cheatsheet.all')}</option>{(['vi-vim', 'vim', 'conditional'] as const).map(value => <option key={value} value={value}>{t(`shortcuts.compatibility.${value}`)}</option>)}</select></label>
-        <label><input type="checkbox" checked={onlyFavorites} onChange={event => setOnlyFavorites(event.target.checked)} />{t('shortcuts.favorites')}</label>
       </div>
       <p className="shortcuts-help">{t('shortcuts.instructions')}</p>
       {selected && <div className="shortcut-preview">
@@ -59,15 +48,14 @@ export default function KeyboardShortcuts() {
         <p>{t(`shortcuts.kind.${selected.kind}`)} · {selected.modes.join(' / ')}{selected.targetMode ? ` → ${selected.targetMode}` : ''} · {t(`shortcuts.compatibility.${selected.compatibility}`)}</p>
         {selected.compatibility === 'conditional' && <p>{t('shortcuts.clipboardNote')}</p>}
         {selected.keys === 'r' && <p>{t('shortcuts.replaceNote')}</p>}
-        <div className="shortcut-steps" role="group" aria-label={t('shortcuts.steps')}>{steps.map((value, index) => <span key={index}><span>{index + 1}.</span> <kbd>{value.label === ' ' ? 'Space' : value.label}</kbd></span>)}</div>
+        <div className="shortcut-steps" role="group" aria-label={t('shortcuts.steps')}>{steps.map((value, index) => <span className="shortcut-step" key={index}><span>{index + 1}.</span> <KeyboardKey keyCode={value.codes.join('+')} label={value.label === ' ' ? 'Space' : value.label} size={value.label.length > 2 || value.label === ' ' ? 'wide' : 'default'} state="highlighted" readOnly /></span>)}</div>
       </div>}
     </>}
     {app === 'vim' && <div className="shortcut-results">
       <p role="status">{t('shortcuts.count', { count: visible.length })}</p>
       {visible.length === 0 && <p>{t('cheatsheet.empty')}</p>}
-      {visible.map(item => <div className="shortcut-row" key={item.id} data-selected={selected?.id === item.id || undefined}>
-        <button className="shortcut-select" type="button" aria-pressed={selected?.id === item.id} onClick={() => setSelected(item)}><code>{item.keys}{item.kind === 'command' ? ' ↵' : ''}</code><span>{item.name[language]}<small>{t(`shortcuts.category.${item.category}`)} · {item.modes.join(' / ')}{item.targetMode ? ` → ${item.targetMode}` : ''} · {t(`shortcuts.compatibility.${item.compatibility}`)}</small></span></button>
-        <button type="button" aria-label={t('shortcuts.favorite', { name: item.name[language] })} aria-pressed={favorites.includes(item.id)} onClick={() => toggleFavorite(item.id)}><Star size={16} fill={favorites.includes(item.id) ? 'currentColor' : 'none'} /></button>
+      {visible.map(item => <div className="shortcut-row" key={item.id} data-shortcut-keys={item.keys} data-selected={selected?.id === item.id || undefined}>
+        <button className="shortcut-select" type="button" aria-pressed={selected?.id === item.id} onClick={() => setSelected(item)}><span className="shortcut-row-keys">{shortcutSteps(item).map((value, index) => <KeyboardKey key={index} keyCode={value.codes.join('+')} label={value.label === ' ' ? 'Space' : value.label} size={value.label.length > 2 || value.label === ' ' ? 'wide' : 'default'} state={selected?.id === item.id ? 'highlighted' : 'default'} readOnly />)}</span><span>{item.name[language]}<small>{t(`shortcuts.category.${item.category}`)} · {item.modes.join(' / ')}{item.targetMode ? ` → ${item.targetMode}` : ''} · {t(`shortcuts.compatibility.${item.compatibility}`)}</small></span></button>
         <button type="button" aria-label={t('shortcuts.copy', { name: item.name[language] })} onClick={() => copy(item.keys)}><Copy size={16} /></button>
       </div>)}
     </div>}
