@@ -42,6 +42,7 @@ export default function CommandDetailsDialog({ entry, trigger, onClose }: {
     };
   }, [trigger]);
   const category = commandCategories.find(item => item.id === entry.category);
+  const codeLanguage = entry.id === "system-stop-win" ? "powershell" : "bash";
   return <dialog ref={dialog} className="command-dialog" aria-modal="true" aria-labelledby="command-dialog-title"
     aria-describedby="command-dialog-description"
     onCancel={event => { event.preventDefault(); onClose(); }}
@@ -62,9 +63,9 @@ export default function CommandDetailsDialog({ entry, trigger, onClose }: {
       </button>
     </header>
     <div className="command-dialog-body">
-      <p id="command-dialog-description">{entry.description[language]}</p>
       <p className="eyebrow">{category?.name[language]}{category && " · "}{entry.platforms.map(platform => ({ linux: "Linux", macos: "macOS", windows: "Windows" })[platform]).join(" / ")}</p>
-      <TerminalCard command={entry.command} />
+      <TerminalCard command={entry.command} language={codeLanguage} />
+      <p id="command-dialog-description" className="command-description">{entry.description[language]}</p>
       {entry.parameters?.length ? <section aria-labelledby="command-parameters-title">
         <h3 id="command-parameters-title">{t("cheatsheet.parameters")}</h3>
         <dl className="command-parameters">{entry.parameters.map(parameter => <div key={parameter.name}>
@@ -75,7 +76,7 @@ export default function CommandDetailsDialog({ entry, trigger, onClose }: {
       {entry.examples?.length ? <section aria-labelledby="command-examples-title">
         <h3 id="command-examples-title">{t("cheatsheet.examples")}</h3>
         {entry.examples.map(example => <div className="command-example" key={example.command}>
-          <p>{example.description[language]}</p><CommandCode command={example.command} />
+          <p>{example.description[language]}</p><CommandCode command={example.command} variant="expanded" highlight language={codeLanguage} />
         </div>)}
       </section> : null}
       <CommandRiskNotice entry={entry} />

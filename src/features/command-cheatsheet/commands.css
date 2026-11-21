@@ -133,24 +133,58 @@
 }
 
 .command-code {
+    --command-font-size: 16px;
+    --command-line-height: 1.6;
+    --command-padding: 8px 12px;
     display: flex;
     min-width: 0;
     margin: 4px 0;
     background: var(--cds-layer-01);
+    color: var(--cds-text-primary);
 }
 
-.command-sheet pre {
-    min-width: 0;
-    overflow-x: auto;
-    margin: 0;
-    padding: 6px 12px;
-    line-height: 1.4;
-    background: var(--cds-layer-01);
+.command-code--compact {
+    margin-block: 8px;
+    border: 1px solid var(--cds-border-subtle);
+}
+
+.command-code--compact:focus-within {
+    border-color: var(--cds-focus);
+}
+
+.command-code--compact .command-actions {
+    align-self: flex-start;
+    padding: 0 4px;
+}
+
+.command-code--expanded {
+    --command-font-size: 18px;
+    --command-line-height: 1.7;
+    --command-padding: 12px;
 }
 
 .command-code pre {
     flex: 1;
-    align-content: center;
+    min-width: 0;
+    overflow-x: auto;
+    margin: 0;
+    padding: var(--command-padding);
+    font-family: 'IBM Plex Mono', Menlo, Consolas, monospace;
+    font-size: var(--command-font-size);
+    font-weight: 400;
+    line-height: var(--command-line-height);
+    letter-spacing: .16px;
+    white-space: pre;
+    overflow-wrap: normal;
+    overscroll-behavior-x: contain;
+    tab-size: 4;
+    -webkit-font-smoothing: antialiased;
+}
+
+.command-code code,
+.command-code .command-token {
+    font: inherit;
+    letter-spacing: inherit;
 }
 
 .command-code button {
@@ -161,7 +195,7 @@
     align-self: center;
 }
 
-.command-sheet code {
+.command-parameters code {
     font-family: 'IBM Plex Mono', Menlo, Consolas, monospace;
     font-size: 14px;
     letter-spacing: .16px;
@@ -170,7 +204,7 @@
 .command-row > p {
     margin: 0;
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.5;
     color: var(--cds-text-secondary);
     overflow-wrap: anywhere;
 }
@@ -188,6 +222,8 @@
     flex-shrink: 0;
     align-items: center;
     gap: 4px;
+    align-self: flex-start;
+    padding: 4px;
 }
 
 .command-dialog {
@@ -485,12 +521,6 @@
     background: transparent;
 }
 
-.terminal-card pre {
-    padding: 6px 0;
-    background: transparent;
-    color: var(--terminal-green);
-}
-
 .terminal-prompt {
     user-select: none;
 }
@@ -512,4 +542,42 @@
     padding-bottom: 8px;
     border-bottom: 1px solid var(--cds-border-subtle);
     margin-bottom: 8px;
+}
+
+/* Detail commands use a reading scale independent of compact result rows. */
+.command-dialog { width: min(960px, calc(100% - 32px)); }
+.command-dialog-heading { align-items: center; padding: 8px 24px; }
+.command-dialog-heading h2 { font-size: 20px; }
+.command-dialog-body { padding: 16px 24px 24px; line-height: 1.6; }
+.command-dialog-body .eyebrow { margin: 0 0 8px; font-size: 12px; color: var(--cds-text-secondary); }
+.command-dialog-body .command-description { margin-top: 16px; color: var(--cds-text-secondary); }
+.command-dialog .terminal-card {
+    margin-top: 0;
+    padding: 0;
+    border-radius: 0;
+    background: var(--cds-layer-01);
+    color: var(--cds-text-primary);
+}
+.command-dialog .terminal-header { margin: 0; padding: 8px 16px; border-bottom: 1px solid var(--cds-border-subtle); }
+.command-dialog .terminal-shell { color: var(--cds-text-secondary); }
+.command-dialog .terminal-dot { width: 8px; height: 8px; }
+.command-dialog .terminal-card button { color: var(--cds-link-primary); }
+.command-dialog .terminal-card button:hover { background: var(--cds-layer-hover); }
+.command-dialog .terminal-card :focus-visible { outline-color: var(--cds-focus); }
+.terminal-prompt { color: var(--cds-text-secondary); }
+.command-token { color: var(--command-light); }
+:root[data-theme=dark] .command-token { color: var(--command-dark); }
+@media (max-width: 671px) {
+    .command-dialog-heading { padding: 8px 12px; }
+    .command-dialog-body { padding: 12px; }
+    .command-code {
+        --command-font-size: 15px;
+        --command-padding: 8px;
+    }
+    .command-code--expanded {
+        --command-font-size: 16px;
+        --command-padding: 12px 8px;
+    }
+    .command-row > p { font-size: 13px; }
+    .command-dialog .terminal-header { padding-inline: 12px; }
 }

@@ -15,7 +15,8 @@ function CommandRow({ entry, onDetails }: { entry: CommandEntry; onDetails: (ent
   const language = i18n.resolvedLanguage === "zh-CN" ? "zh" : "en";
   return <article className="command-row">
     <div className="command-heading"><h3>{entry.name[language]}</h3></div>
-    <CommandCode command={entry.command} actions={
+    <CommandCode command={entry.command} variant="compact" highlight
+      language={entry.id === "system-stop-win" ? "powershell" : "bash"} actions={
       <button className="command-details-trigger" type="button" aria-haspopup="dialog"
         aria-label={`${t("cheatsheet.details")}: ${entry.name[language]}`} title={t("cheatsheet.details")}
         onClick={event => onDetails(entry, event.currentTarget)}>
