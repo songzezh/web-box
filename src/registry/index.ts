@@ -185,7 +185,7 @@ export const tools: ToolDefinition[] = [
   {
     id: "keyboard-shortcuts",
     name: "Keyboard Shortcuts",
-    description: "Explore keyboard combinations and visualize physical key presses.",
+    description: "Browse shortcut combinations and Vim / Vi commands.",
     categoryId: "dev-test",
     path: "/tools/keyboard-shortcuts",
     status: "available",

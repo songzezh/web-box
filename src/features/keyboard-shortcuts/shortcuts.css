@@ -3,3 +3,22 @@
 .shortcuts-controls select, .shortcuts-controls button, .shortcuts-presets button { min-height: 40px; padding: 8px 16px; color: var(--cds-text-primary); background: var(--cds-layer-01); border: 0; border-bottom: 1px solid var(--cds-border-subtle); }
 .shortcuts-controls button, .shortcuts-presets button { cursor: pointer; }
 .shortcuts-controls button:hover, .shortcuts-presets button:hover { background: var(--cds-layer-hover); }
+.shortcuts-filters input[type="search"] { min-height: 40px; padding: 8px 16px; color: var(--cds-text-primary); background: var(--cds-layer-01); border: 0; border-bottom: 1px solid var(--cds-border-subtle); }
+.shortcut-preview { padding: 16px; background: var(--cds-layer-01); overflow-wrap: anywhere; }
+.shortcut-preview > code { display: block; margin-top: 8px; white-space: pre-wrap; }
+.shortcut-steps { display: flex; flex-wrap: wrap; gap: 8px; }
+.shortcut-row button { min-height: 40px; padding: 8px; border: 0; background: var(--cds-layer-01); color: var(--cds-text-primary); cursor: pointer; }
+.shortcut-row button[aria-pressed="true"] { color: var(--cds-link-primary); outline: 2px solid var(--cds-link-primary); outline-offset: -2px; }
+.shortcut-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 288px), 1fr)); gap: 8px; margin-block: 24px; }
+.shortcut-results > p { grid-column: 1 / -1; margin-block: 0 8px; }
+.shortcut-row { display: flex; min-width: 0; align-items: stretch; background: var(--cds-layer-01); border-bottom: 1px solid var(--cds-border-subtle); }
+.shortcut-row .shortcut-select { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; justify-content: center; text-align: left; padding: 8px 12px; font-size: 14px; line-height: 1.4; }
+.shortcut-select code { max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; }
+.shortcut-select > span { min-width: 0; overflow-wrap: anywhere; }
+.shortcut-select small { display: block; margin-top: 4px; font-size: 12px; line-height: 1.4; color: var(--cds-text-secondary); }
+.shortcut-row button:hover { background: var(--cds-layer-hover); }
+.shortcut-row > button:not(.shortcut-select) { min-width: 40px; }
+@media (max-width: 672px) { .shortcuts-filters label { width: 100%; } .shortcuts-filters select, .shortcuts-filters input[type="search"] { width: 100%; } }
+
+.shortcuts-help { color: var(--cds-text-secondary); font-size: 14px; margin-block: 16px; }
+.shortcut-steps > span { padding: 8px; }
