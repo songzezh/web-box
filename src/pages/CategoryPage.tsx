@@ -25,7 +25,7 @@ export default function CategoryPage() {
         <div><dt>{t('common:availableTools')}</dt><dd>{available}</dd></div>
       </dl>
       <section aria-label={t('common:toolsLabel', { name: copy.category(category.id) })}>
-        {tools.length ? <div className="tool-grid">{tools.map(tool => <ToolCard key={tool.id} tool={tool} category={copy.category(category.id, 'name')} />)}</div> : (
+        {tools.length ? <div className="tool-grid">{tools.map(tool => <ToolCard key={tool.id} tool={tool} />)}</div> : (
           <div className="empty-state"><div><h2>{t('common:emptyToolsTitle')}</h2><p>{t('common:emptyToolsDescription')}</p></div></div>
         )}
       </section>

@@ -198,7 +198,7 @@
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:16px
 }
-.tool-card{
+.resource-card{
   padding:16px;
   background:var(--cds-layer-01);
   min-height:224px;
@@ -208,11 +208,11 @@
   overflow-wrap:anywhere;
   border-bottom:1px solid var(--cds-border-subtle)
 }
-.tool-card:hover{
+.resource-card:hover{
   background:var(--cds-layer-hover);
   color:var(--cds-text-primary)
 }
-.tool-card:active{
+.resource-card:active{
   background:var(--cds-selected)
 }
 .card-top{
@@ -233,13 +233,13 @@
   white-space:nowrap;
   color:var(--cds-text-secondary)
 }
-.tool-card h3{
+.resource-card h3{
   font-size:20px;
   line-height:1.4;
   font-weight:400;
   margin-top:24px
 }
-.tool-card>p{
+.resource-card>p{
   font-size:14px;
   color:var(--cds-text-secondary);
   margin:8px 0 24px
@@ -411,7 +411,7 @@ footer{
   .content-page h1{font-size:32px}
   .footer-inner{align-items:start;flex-direction:column;gap:16px}
   .footer-inner nav{margin:0;gap:24px}
-  .tool-card{min-height:224px}
+  .resource-card{min-height:224px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{
@@ -488,12 +488,7 @@ footer{
   min-height:48px;
   flex-shrink:0;
 }
-.tool-card-planned:hover,.tool-card-planned:active {
-  background:var(--cds-layer-01);
-}
-.tool-card-planned .card-bottom {
-  color:var(--cds-text-secondary);
-}
+
 
 .breadcrumbs {
   flex-wrap:wrap;

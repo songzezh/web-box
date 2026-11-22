@@ -61,7 +61,7 @@ test("home renders seven category destinations and no individual tool cards", ()
   assert.ok(html.includes("<dt>Planned Tools</dt><dd>60</dd>"));
   assert.ok(html.includes(`<dt>Available Tools</dt><dd>${registry.statistics.available}</dd>`));
 });
-test("category routes show only their associated tools and Coming soon has no link", () => {
+test("category routes show only their associated tools with registered card destinations", () => {
   for (const category of registry.categories) {
     const html = renderPage(
       CategoryPage,
@@ -70,7 +70,9 @@ test("category routes show only their associated tools and Coming soon has no li
     );
     for (const tool of registry.tools)
       assert.equal(html.includes(tool.name), tool.categoryId === category.id);
-    assert.ok(html.includes("Coming soon"));
+    for (const tool of registry.getToolsByCategory(category.id)) {
+      assert.ok(html.includes('href="' + tool.path + '"'));
+    }
     assert.equal(
       html.includes('href="/tools/command-cheatsheet"'),
       category.id === "dev-test",
@@ -95,11 +97,11 @@ test("available tool cards expose their registered destination", () => {
     createElement(
       MemoryRouter,
       null,
-      createElement(ToolCard, { tool, category: "Test category" }),
+      createElement(ToolCard, { tool }),
     ),
   );
   assert.ok(html.includes(`href="${tool.path}"`));
-  assert.ok(html.includes("Open tool"));
+  assert.ok(!html.includes("Open tool"));
 });
 
 test("breadcrumbs show the category level and return a not-found label for unknown categories", async () => {

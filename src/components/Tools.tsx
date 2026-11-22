@@ -1,74 +1,19 @@
 import "../i18n/index";
 import { useCatalogTranslation } from "../i18n/useCatalogTranslation";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { useToolActivity } from "../hooks/useToolActivity";
+import { ArrowUpRight } from "lucide-react";
+import { ToolCard as ToolCardView } from "./ToolCard";
 import { getSafeResourceUrl } from "../registry";
 import type { ExternalResource, ToolDefinition } from "../registry";
-export function ToolCard({
-  tool,
-  category,
-}: {
-  tool: ToolDefinition;
-  category: string;
-}) {
+// Catalog adapter: translations stay outside the visual card.
+export function ToolCard({ tool }: { tool: ToolDefinition }) {
   const copy = useCatalogTranslation();
-  const { t } = useTranslation([
-    "common",
-    "navigation",
-    "categories",
-    "resources",
-    "tools",
-  ]);
-  const activity = useToolActivity(tool.id);
-  const content = (
-    <>
-      <div className="card-top">
-        <span className="eyebrow">{category}</span>
-        <span className="tag">
-          {tool.status === "available"
-            ? t("common:available")
-            : t("common:comingSoon")}
-        </span>
-      </div>
-      <h3>{copy.tool(tool.id, "name")}</h3>
-      <p>{copy.tool(tool.id, "description")}</p>
-      <div className="card-bottom">
-        <span>
-          {tool.status === "available"
-            ? t("common:openTool")
-            : t("common:unavailable")}
-        </span>
-        {tool.status === "available" && (
-          <ArrowRight size={20} aria-hidden="true" />
-        )}
-      </div>
-    </>
-  );
-  return tool.status === "available" ? (
-    <div>
-      <Link className="tool-card" to={tool.path}>
-        {content}
-      </Link>
-      <div className="tool-activity">
-        <button
-          type="button"
-          aria-pressed={activity.favorite}
-          onClick={activity.toggleFavorite}
-        >
-          {t(
-            activity.favorite
-              ? "tools:cheatsheet.unfavorite"
-              : "tools:cheatsheet.favorite",
-          )}
-        </button>
-        {activity.recent && <span>{t("tools:cheatsheet.recent")}</span>}
-      </div>
-    </div>
-  ) : (
-    <article className="tool-card tool-card-planned">{content}</article>
-  );
+  return <ToolCardView
+    name={copy.tool(tool.id, "name")}
+    description={copy.tool(tool.id, "description")}
+    icon={tool.icon}
+    path={tool.path}
+  />;
 }
 export function ResourceCard({ resource }: { resource: ExternalResource }) {
   const copy = useCatalogTranslation();
@@ -83,7 +28,7 @@ export function ResourceCard({ resource }: { resource: ExternalResource }) {
   if (!url) return null;
   return (
     <a
-      className="tool-card"
+      className="resource-card"
       href={url.href}
       target="_blank"
       rel="noopener noreferrer"

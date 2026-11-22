@@ -6,6 +6,7 @@ export type CategoryIcon =
   | "time"
   | "code"
   | "image";
+export type ToolIcon = "keyboard" | "terminal" | "text" | "data" | "convert" | "security" | "time" | "regex" | "image";
 export type ToolStatus = "available" | "coming-soon";
 export interface ToolCategory {
   id: string;
@@ -17,6 +18,7 @@ export interface ToolCategory {
   icon: CategoryIcon;
 }
 export interface ToolDefinition {
+  icon: ToolIcon;
   id: string;
   name: string;
   description: string;
@@ -184,6 +186,7 @@ export const categories = (
 export const tools: ToolDefinition[] = [
   {
     id: "keyboard-shortcuts",
+    icon: "keyboard",
     name: "Keyboard Shortcuts",
     description: "Browse shortcut combinations and Vim / Vi commands.",
     categoryId: "dev-test",
@@ -193,6 +196,7 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "command-cheatsheet",
+    icon: "terminal",
     name: "Command Cheat Sheet",
     description:
       "Quickly find, understand, and copy commonly used developer commands.",
@@ -203,6 +207,7 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "text-statistics",
+    icon: "text",
     name: "Text statistics",
     description: "Count characters and words in a piece of text.",
     categoryId: "text-content",
@@ -212,6 +217,7 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "json-formatter",
+    icon: "data",
     name: "JSON formatter",
     description: "Format structured JSON for easier reading.",
     categoryId: "data-format",
@@ -221,6 +227,7 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "base64",
+    icon: "convert",
     name: "Base64 encode / decode",
     description: "Convert text to and from Base64 encoding.",
     categoryId: "encode-convert",
@@ -230,6 +237,7 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "password-generator",
+    icon: "security",
     name: "Random password generator",
     description: "Generate random passwords in your browser.",
     categoryId: "security-random",
@@ -239,6 +247,7 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "unix-timestamp",
+    icon: "time",
     name: "Unix timestamp converter",
     description: "Convert between Unix timestamps and dates.",
     categoryId: "time-schedule",
@@ -248,6 +257,7 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "regex-tester",
+    icon: "regex",
     name: "Regular expression tester",
     description: "Explore patterns and test text matches.",
     categoryId: "dev-test",
@@ -257,6 +267,7 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "color-converter",
+    icon: "image",
     name: "Color converter",
     description: "Convert color values between common formats.",
     categoryId: "image-design",
