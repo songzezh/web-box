@@ -7,6 +7,9 @@ import { Box, Menu, Monitor, Moon, Sun, X } from 'lucide-react'
 import { useTheme } from '../hooks/useTheme'
 import GlobalNavigation from './GlobalNavigation'
 
+/**
+ * 全站 Header：组合导航、语言和主题切换，并用本地 State 管理移动菜单与焦点恢复。
+ */
 export default function Header() {
   const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
   const { theme, toggleTheme, followSystemTheme, followsSystem } = useTheme()
@@ -20,6 +23,7 @@ export default function Header() {
     toggle.current?.focus()
   }
 
+  // 仅在菜单打开时监听 Escape、外部点击和桌面断点；关闭或卸载时移除监听，避免残留处理器。
   useEffect(() => {
     if (!open) return
     const firstLink = header.current?.querySelector<HTMLAnchorElement>('#mobile-navigation a[aria-current]') ?? header.current?.querySelector<HTMLAnchorElement>('#mobile-navigation a')

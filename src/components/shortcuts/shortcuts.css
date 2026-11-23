@@ -1,3 +1,4 @@
+/* 快捷键摘要与顺序步骤共用样式；展开区用 0fr/1fr 过渡配合裁剪实现内容高度动画。 */
 .shortcut-row button { min-height: 40px; padding: 8px; border: 0; background: var(--cds-layer-01); color: var(--cds-text-primary); cursor: pointer; }
 .shortcut-row[data-selected] { color: var(--cds-link-primary); outline: 2px solid var(--cds-link-primary); outline-offset: -2px; }
 .shortcut-row { min-width: 0; background: var(--cds-layer-01); border-bottom: 1px solid var(--cds-border-subtle); }

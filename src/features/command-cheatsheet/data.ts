@@ -1,6 +1,10 @@
+/** 命令速查静态目录：提供分类与 CommandEntry 数据，仅供浏览、搜索与复制。 */
 import type { CommandEntry } from './types'
 import { certificateCommands } from './certificate-commands.ts'
 
+/**
+ * 分类顺序决定列表分组和侧栏顺序；名称直接使用本数据的中英文文案。
+ */
 export const commandCategories = [
   {
     "id": "git",
@@ -62,6 +66,9 @@ export const commandCategories = [
   { id: 'keytool', name: { en: 'Java Keytool', zh: 'Java Keytool 证书库' } }
 ] as const
 
+/**
+ * 内置命令目录；category 关联分类 ID，附加证书命令共用同一展示与筛选链路。
+ */
 export const commands: CommandEntry[] = [
   ...certificateCommands,
   {

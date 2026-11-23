@@ -1,3 +1,4 @@
+/* 命令列表、终端与原生 dialog 的共享样式；高亮 token 的双主题变量随根元素 data-theme 选择。 */
 .command-page .content-page {
     padding-top: 24px;
 }

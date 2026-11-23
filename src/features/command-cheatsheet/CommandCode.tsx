@@ -6,16 +6,26 @@ import { copyCommand } from "./filter";
 import { lazy, Suspense } from "react";
 import type { CommandLanguage } from "./command-highlight";
 
+// 按需加载高亮组件；模块加载失败或 Suspense 等待时均保留原始命令文本。
 const HighlightedCommand = lazy(() => import("./HighlightedCommand").catch(() => ({
   default: ({ code }: { code: string; language: CommandLanguage }) => code,
 })));
 
+/**
+ * 终端代码展示 Props；command 是复制原文，actions 为可选附加操作。
+ */
 interface CommandCodeProps {
+  /** 需要展示并原样复制的命令文本。 */
   command: string;
+  /** 可选附加操作区域；省略时只显示复制按钮。 */
   actions?: ReactNode;
+  /** 默认 false；开启后显示语言对应提示符，JSON 始终不显示。 */
   prompt?: boolean;
+  /** 默认 false；开启后异步加载高亮，失败保留原文。 */
   highlight?: boolean;
+  /** 默认 bash；也支持 shell、powershell 和 json。 */
   language?: CommandLanguage;
+  /** 默认 default；compact 用于列表，expanded 用于详情。 */
   variant?: "compact" | "default" | "expanded";
 }
 
@@ -24,9 +34,14 @@ interface CommandCodeProps {
  * From Uiverse.io by Yaya12085
  * https://uiverse.io/Yaya12085
  */
+/**
+ * 共享命令展示与复制反馈组件；prompt 与 highlight 默认 false，language 默认 bash，variant 默认 default。
+ * 复制只写 command，成功提示两秒后清除，失败提示保留到再次复制；不执行任何命令。
+ */
 export default function CommandCode({ command, actions, prompt = false, highlight = false, language = "bash", variant = "default" }: CommandCodeProps) {
   const { t } = useTranslation("tools");
   const [feedback, setFeedback] = useState<"copied" | "failed" | null>(null);
+  // Ref 保存计时器、挂载状态和复制互斥标记，不参与渲染；卸载后不再写入反馈 State。
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mounted = useRef(false);
   const copying = useRef(false);
@@ -34,6 +49,7 @@ export default function CommandCode({ command, actions, prompt = false, highligh
     mounted.current = true;
     return () => { mounted.current = false; clearTimeout(timer.current); };
   }, []);
+  // 忽略尚未完成时的重复复制；finally 始终释放标记，卸载时清除待执行计时器。
   const copy = async () => {
     if (copying.current) return;
     copying.current = true;

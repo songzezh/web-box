@@ -1,3 +1,4 @@
+/* 全局基础样式与主题变量；useTheme 更新根元素 data-theme，组件统一消费 --cds-* 变量。 */
 @import "tailwindcss";
 @font-face{
   font-family:"IBM Plex Sans";

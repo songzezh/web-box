@@ -6,6 +6,9 @@ import { ToolCard as ToolCardView } from "./ToolCard";
 import { getSafeResourceUrl } from "../registry";
 import type { ExternalResource, ToolDefinition } from "../registry";
 // Catalog adapter: translations stay outside the visual card.
+/**
+ * 目录适配组件：把 ToolDefinition 的稳定 ID 翻译为文案，再交给纯展示 ToolCard。
+ */
 export function ToolCard({ tool }: { tool: ToolDefinition }) {
   const copy = useCatalogTranslation();
   return <ToolCardView
@@ -15,6 +18,9 @@ export function ToolCard({ tool }: { tool: ToolDefinition }) {
     path={tool.path}
   />;
 }
+/**
+ * 展示外部资源，先验证 http/https URL；无效地址不渲染，新窗口链接隔离 opener。
+ */
 export function ResourceCard({ resource }: { resource: ExternalResource }) {
   const copy = useCatalogTranslation();
   const { t } = useTranslation([
@@ -43,6 +49,9 @@ export function ResourceCard({ resource }: { resource: ExternalResource }) {
     </a>
   );
 }
+/**
+ * 工具与说明页共用的页面壳；title、description 是已翻译文案，children 是调用方提供的页面内容。
+ */
 export function ToolPageLayout({
   title,
   description,

@@ -2,6 +2,9 @@ import { useCatalogTranslation } from '../i18n/useCatalogTranslation'
 import { Link } from 'react-router-dom'
 import { ArrowRight, CaseSensitive, Braces, Binary, ShieldCheck, Clock, CodeXml, Image, BookOpen, Users, Globe, Briefcase } from 'lucide-react'
 const categoryIcons = { text: CaseSensitive, data: Braces, convert: Binary, security: ShieldCheck, time: Clock, code: CodeXml, image: Image, book: BookOpen, community: Users, site: Globe, briefcase: Briefcase }
+/**
+ * 分类入口卡片；category 的 ext- 前缀决定翻译来源，path 决定内部导航目标，count 由调用方格式化。
+ */
 export function CategoryCard({ category, path, count }: { category: { id: string; name: string; description: string; icon: keyof typeof categoryIcons }; path: string; count: string }) {
   const copy = useCatalogTranslation()
   const translate = category.id.startsWith('ext-') ? copy.resourceCategory : copy.category

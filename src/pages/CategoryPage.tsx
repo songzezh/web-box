@@ -6,6 +6,9 @@ import { getCategoryById, getCategoryPath, getToolsByCategory } from '../registr
 import { ToolCard, ToolPageLayout } from '../components/Tools'
 import NotFoundPage from './NotFoundPage'
 
+/**
+ * 按 categoryId 展示登记工具与数量；未知分类显示未找到页，旧路径以 replace 跳转到规范路径。
+ */
 export default function CategoryPage() {
   const copy = useCatalogTranslation()
   const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])

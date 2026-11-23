@@ -1,3 +1,4 @@
+/** Vim / Vi 静态速查数据：名称随语言选择，主分类、关联分类、模式与兼容性由快捷键页面联合筛选。 */
 import type { Shortcut } from './shortcut-model'
 
 export const vimShortcuts: Shortcut[] = [

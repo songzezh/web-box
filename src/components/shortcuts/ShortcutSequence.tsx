@@ -3,14 +3,24 @@ import { useTranslation } from 'react-i18next'
 import { KeyboardKey } from '../keyboard'
 import './shortcuts.css'
 
+/**
+ * 一次按键步骤：label 是显示文本，codes 是同时按下的物理键标识；数组中的多个步骤依次执行。
+ */
 export interface ShortcutSequenceStep { label: string; codes: readonly string[] }
 
+/**
+ * 仅将修饰键前缀的组合拆成多个键帽；其他字符保持单个显示标签，即使其物理映射包含 Shift。
+ */
 function keyLegends(step: ShortcutSequenceStep) {
   if (!/^(Ctrl|Shift|Alt|Cmd|Meta)\+/.test(step.label)) return [{ code: step.codes.join('+'), label: step.label === ' ' ? 'Space' : step.label }]
   const modifiers: Record<string, string> = { ControlLeft: 'Ctrl', ShiftLeft: 'Shift', AltLeft: 'Alt', MetaLeft: '⌘' }
   return step.codes.map(code => ({ code, label: modifiers[code] ?? (code.startsWith('Key') ? code.slice(3) : code.startsWith('Digit') ? code.slice(5) : step.label.split('+').at(-1) ?? step.label) }))
 }
 
+/**
+ * 按 steps 顺序渲染只读键帽；compact 默认 false，开启后省略步骤编号和操作提示。
+ * highlighted 默认 false；为 true 时统一高亮各键帽，箭头表示顺序，加号表示同按。
+ */
 export function ShortcutSequence({ steps, compact = false, highlighted = false }: { steps: readonly ShortcutSequenceStep[]; compact?: boolean; highlighted?: boolean }) {
   const { t } = useTranslation('tools')
   return <ol className={compact ? 'shortcut-sequence shortcut-row-keys' : 'shortcut-sequence'} aria-label={t('shortcut.sequence')}>

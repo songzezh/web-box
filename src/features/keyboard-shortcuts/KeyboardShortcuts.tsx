@@ -13,6 +13,10 @@ const combinations = [
   { id: 'search', key: 'k' }, { id: 'copy', key: 'c' },
   { id: 'paste', key: 'v' }, { id: 'undo', key: 'z' },
 ] as const
+/**
+ * 快捷键工具：在通用组合键与 Vim 数据间切换，以本地 State 保存平台、筛选条件和唯一展开项。
+ * 平台只改变通用组合键的 Ctrl/Cmd；Vim 按键映射始终采用 ANSI 规则，不监听真实键盘输入。
+ */
 export default function KeyboardShortcuts() {
   const { t, i18n } = useTranslation('tools')
   const [platform, setPlatform] = useState<'windows' | 'mac'>('windows')
@@ -23,6 +27,8 @@ export default function KeyboardShortcuts() {
   const [compatibility, setCompatibility] = useState('')
   const [query, setQuery] = useState('')
   const language = i18n.resolvedLanguage === 'zh-CN' ? 'zh-CN' : 'en'
+  // 四组条件取交集；分类同时匹配主分类和关联分类，模式同时匹配适用模式与切换目标模式。
+  // 切换应用、平台或筛选条件时清除展开项；筛选 State 本身不会因切换应用而重置。
   const visible = vimShortcuts.filter(item => (!category || item.category === category || item.relatedCategories?.some(value => value === category)) && (!mode || item.modes.includes(mode as typeof modes[number]) || item.targetMode === mode) && (!compatibility || item.compatibility === compatibility) && matchesShortcut(item, query))
   return <ToolPageLayout title={t('keyboard-shortcuts.name')} description={t('keyboard-shortcuts.description')}>
     <div className="shortcuts-layout">

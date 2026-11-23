@@ -12,6 +12,9 @@ import CommandDetailsDialog, {
 } from "./CommandDetailsDialog";
 import "./commands.css";
 
+/**
+ * 展示单条命令摘要与风险提示；onDetails 同时上报条目及触发按钮，用于详情关闭后的焦点恢复。
+ */
 function CommandRow({
   entry,
   onDetails,
@@ -50,17 +53,23 @@ function CommandRow({
   );
 }
 
+/**
+ * 命令速查页：本地 State 管理搜索、分类与详情选择，useToolActivity 管理工具级收藏和访问记录。
+ * 初始选择首个分类；结果依照 commandCategories 顺序分组，分类数量始终统计原始目录。
+ */
 export default function CommandCheatSheet() {
   const { t, i18n } = useTranslation("tools");
   const language = i18n.resolvedLanguage === "zh-CN" ? "zh" : "en";
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>(commandCategories[0].id);
+  // 保存条目和实际触发元素；置空会卸载 dialog，触发其清理与焦点恢复。
   const [selection, setSelection] = useState<{
     entry: CommandEntry;
     trigger: HTMLButtonElement;
   } | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const activity = useToolActivity("command-cheatsheet", true);
+  // 详情打开期间不接管斜杠；selection 变化时替换监听器，清理旧闭包。
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (

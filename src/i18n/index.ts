@@ -1,3 +1,4 @@
+/** 国际化入口：注册中英文五组 namespace、开发期缺失检查与语言变更副作用。 */
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { readLanguage, persistLanguage } from './config'
@@ -25,10 +26,13 @@ if (import.meta.env.DEV) {
     }
   }
 }
+// 所有语言切换统一在此持久化，并同步辅助技术使用的 HTML lang。
 i18n.on('languageChanged', language => {
   persistLanguage(language)
   if (typeof document !== 'undefined') document.documentElement.lang = language
 })
+// 翻译 JSON 随模块静态加载并同步初始化；点号是完整键名的一部分，缺失文案回退英文。
+// React 已负责文本转义，因此关闭 i18next 的额外插值转义。
 void i18n.use(initReactI18next).init({
   resources, lng: readLanguage(), fallbackLng: 'en', supportedLngs: ['en', 'zh-CN'],
   defaultNS: 'common', keySeparator: false, initAsync: false,

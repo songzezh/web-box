@@ -1,3 +1,4 @@
+/** OpenSSL 证书命令参考数据；占位符、风险、参数和示例用于详情展示，浏览器不处理证书或执行命令。 */
 import type { CommandEntry } from "./types";
 
 // Static reference data only; no command or certificate is processed by the browser.

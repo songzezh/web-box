@@ -4,6 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { Link, matchPath, useLocation } from 'react-router-dom'
 import { getActiveNavigationPath, navigationItems } from '../navigation'
 
+/**
+ * 受路径驱动的导航；items 省略时使用全站入口并高亮父分类，传入时按各路径匹配。
+ * label 省略时使用主导航文案；id 可省略；onNavigate 与 onBlur 由调用方按需提供，用于移动菜单收起。
+ */
 export default function GlobalNavigation({ className, id, onNavigate, onBlur, items, label }: {
   items?: { label: string; path: string }[]
   label?: string

@@ -1,3 +1,4 @@
+/* 快捷键工具布局；桌面侧栏与移动 dialog 按断点切换，抽屉层覆盖当前页面。 */
 .shortcuts-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-block: 16px; }
 .shortcuts-controls label { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .shortcuts-controls select { min-height: 40px; padding: 8px 16px; color: var(--cds-text-primary); background: var(--cds-layer-01); border: 0; border-bottom: 1px solid var(--cds-border-subtle); }

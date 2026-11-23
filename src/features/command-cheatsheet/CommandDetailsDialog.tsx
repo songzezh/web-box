@@ -6,6 +6,9 @@ import TerminalCard from "./TerminalCard";
 import { commandCategories } from "./data";
 import type { CommandEntry } from "./types";
 
+/**
+ * 复用命令风险说明；safe 不显示，有 warning 时显示当前语言文本，否则使用通用谨慎提示。
+ */
 export function CommandRiskNotice({ entry }: { entry: CommandEntry }) {
   const { t, i18n } = useTranslation("tools");
   if (entry.risk === "safe" || !entry.risk) return null;
@@ -16,6 +19,10 @@ export function CommandRiskNotice({ entry }: { entry: CommandEntry }) {
   </p>;
 }
 
+/**
+ * 原生模态详情：entry 提供命令、可选参数与示例，trigger 用于关闭后恢复焦点，onClose 通知父级卸载。
+ * 参数和示例仅在非空时显示；点击真正的背景区域、Escape 或关闭按钮请求关闭。
+ */
 export default function CommandDetailsDialog({ entry, trigger, onClose }: {
   entry: CommandEntry;
   trigger: HTMLButtonElement;
@@ -25,6 +32,7 @@ export default function CommandDetailsDialog({ entry, trigger, onClose }: {
   const language = i18n.resolvedLanguage === "zh-CN" ? "zh" : "en";
   const dialog = useRef<HTMLDialogElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
+  // 挂载时记录滚动与 body overflow、锁定背景并聚焦标题；清理时恢复，且只聚焦仍连接的触发元素。
   useEffect(() => {
     const modal = dialog.current;
     if (!modal) return;

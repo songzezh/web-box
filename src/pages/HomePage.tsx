@@ -5,6 +5,9 @@ import { ArrowUpRight, ShieldCheck } from 'lucide-react'
 import { categories, getCategoryPath, statistics } from '../registry'
 import { CategoryCard } from '../components/CategoryCard'
 
+/**
+ * 首页目录：展示 registry 汇总、内部分类卡片与外部资源入口；规划数与已可用数分别统计。
+ */
 export default function HomePage() {
   const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
   return (

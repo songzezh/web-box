@@ -1,3 +1,4 @@
+/* 键帽尺寸与立体效果由 CSS 变量统一缩放；显式宽度覆盖默认尺寸，状态类控制高亮与按压外观。 */
 /* From Uiverse.io by Cksunandh — https://uiverse.io/Cksunandh/stale-dog-84 */
 .keyboard-key {
   --key-unit: var(--keyboard-key-height, 48px);

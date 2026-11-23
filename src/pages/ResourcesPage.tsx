@@ -7,6 +7,9 @@ import GlobalNavigation from '../components/GlobalNavigation'
 import { externalResourceCategories, getResourceCategoryById, getResourceCategoryPath, getResourcesByCategory } from '../registry'
 import NotFound from './NotFoundPage'
 
+/**
+ * 资源目录页；resourceCategoryId 省略时展示分类总览，存在时展示该分类资源，未知 ID 显示未找到页。
+ */
 export default function ResourcesPage({ resourceCategoryId }: { resourceCategoryId?: string }) {
   const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])
   const copy = useCatalogTranslation()

@@ -5,6 +5,9 @@ import { Link, matchPath, useLocation } from 'react-router-dom'
 import { getCategoryPath, getToolById } from '../registry'
 import { getRouteCategory, getRouteResourceCategory } from '../navigation'
 
+/**
+ * 按当前路径生成面包屑；工具页补充父分类、资源子页补充资源入口，首页隐藏。
+ */
 export default function Breadcrumbs() {
   const copy = useCatalogTranslation()
   const { t } = useTranslation(['common', 'navigation', 'categories', 'resources', 'tools'])

@@ -1,3 +1,4 @@
+/** 应用路由与页面壳；路由元数据依赖 registry 和国际化目录适配层。 */
 import "./i18n/index";
 import { useCatalogTranslation } from "./i18n/useCatalogTranslation";
 import { useTranslation } from "react-i18next";
@@ -23,6 +24,9 @@ import "./App.css";
 import CommandCheatSheet from "./features/command-cheatsheet/CommandCheatSheet";
 import KeyboardShortcuts from "./features/keyboard-shortcuts/KeyboardShortcuts";
 
+/**
+ * 根据路由 toolId 分发两个已实现工具；其他已登记工具展示规划占位，未知 ID 展示未找到页。
+ */
 function ToolPage() {
   const copy = useCatalogTranslation();
   const { t } = useTranslation([
@@ -55,6 +59,9 @@ function ToolPage() {
     </ToolPageLayout>
   );
 }
+/**
+ * 根据当前路径与语言同步文档元信息，并在 location 变化后复位滚动和主内容焦点。
+ */
 function RouteEffects() {
   const copy = useCatalogTranslation();
   const { t, i18n } = useTranslation([
@@ -82,6 +89,7 @@ function RouteEffects() {
             "/privacy": t("navigation:privacy"),
             "/resources": t("resources:title"),
           }[location.pathname] ?? t("common:notFoundTitle"));
+  // 标题或语言变化时同步浏览器标题、HTML lang 和已有 description meta。
   useEffect(() => {
     document.title = `${title} — Web Box`;
     document.documentElement.lang = i18n.resolvedLanguage ?? "en";
@@ -95,6 +103,10 @@ function RouteEffects() {
   }, [location]);
   return null;
 }
+/**
+ * 全站页面壳：组合 Header、面包屑、HashRouter 内的路由内容与页脚。
+ * 分类和资源路由由 registry 驱动；工具组件由 ToolPage 显式分发。
+ */
 export default function App() {
   const { t } = useTranslation([
     "common",

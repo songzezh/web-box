@@ -4,6 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { applications } from './applications'
 import type { ApplicationId } from './applications'
 
+/**
+ * 受控应用选择器；selected 标识当前应用，onSelect 通知父级切换。
+ * 桌面使用侧栏，移动端使用原生 dialog；切换到桌面时关闭抽屉并将焦点移到当前应用按钮。
+ */
 export function ApplicationSidebar({ selected, onSelect }: { selected: ApplicationId; onSelect: (id: ApplicationId) => void }) {
   const { t } = useTranslation('tools')
   const dialog = useRef<HTMLDialogElement>(null)
