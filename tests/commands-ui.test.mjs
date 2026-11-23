@@ -358,3 +358,39 @@ test("StrictMode and delayed native close events do not dismiss an open details 
   await click(document.querySelector(".command-dialog-close"));
   assert.equal(document.querySelector(".command-dialog"), null);
 });
+
+
+test("shared terminal preserves multiline commands and copies without shell decoration", async () => {
+  const CommandCode = (await server.ssrLoadModule("/src/features/command-cheatsheet/CommandCode.tsx")).default;
+  const { createRoot } = await import("react-dom/client");
+  const host = document.createElement("div");
+  document.body.append(host);
+  const isolatedRoot = createRoot(host);
+  const command = 'Get-ChildItem -Path "$env:USERPROFILE"\n  # preserve indentation\n' + 'x'.repeat(500);
+  let copied;
+  Object.defineProperty(navigator, "clipboard", {
+    value: { writeText: async value => { copied = value; } }, configurable: true,
+  });
+  try {
+    await act(async () => isolatedRoot.render(createElement(CommandCode, {
+      command, language: "powershell", prompt: true, highlight: true,
+    })));
+    assert.equal(host.querySelector("pre code").textContent, command);
+    assert.equal(host.querySelector(".terminal-prompt").textContent, "PS> ");
+    assert.equal(host.querySelector(".terminal-shell").textContent, "powershell");
+    assert.equal(host.querySelectorAll(".terminal-dot").length, 3);
+    assert.ok(host.querySelector(".command-terminal-header .command-copy"));
+    await click(host.querySelector(".command-copy"));
+    assert.equal(copied, command);
+    assert.ok(host.querySelector(".lucide-check"));
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: async () => { throw Error("denied"); } }, configurable: true,
+    });
+    await click(host.querySelector(".command-copy"));
+    assert.equal(host.querySelector(".lucide-check"), null);
+    assert.ok(host.querySelector('[role="alert"]'));
+  } finally {
+    await act(async () => isolatedRoot.unmount());
+    host.remove();
+  }
+});

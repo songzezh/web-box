@@ -133,67 +133,92 @@
 }
 
 .command-code {
-    --command-font-size: 16px;
-    --command-line-height: 1.6;
-    --command-padding: 8px 12px;
+    --command-font-size: 15px;
+    --command-padding: 14px 18px;
+    --command-prompt: #167339;
     display: flex;
+    flex-direction: column;
+    width: 100%;
     min-width: 0;
+    max-width: 100%;
     margin: 4px 0;
+    border-radius: 6px;
     background: var(--cds-layer-01);
     color: var(--cds-text-primary);
+    box-shadow: -2px 4px 12px rgb(0 0 0 / 8%);
 }
+
+:root[data-theme=dark] .command-code {
+    --command-prompt: #7ee787;
+    background: #111318;
+    box-shadow: -2px 4px 12px rgb(0 0 0 / 4%);
+}
+
+.command-terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 8px 0 18px;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--cds-text-primary) 6%, transparent);
+    background: color-mix(in srgb, var(--cds-layer-01) 94%, var(--cds-text-primary));
+}
+:root[data-theme=dark] .command-terminal-header { background: #191c22; }
+.command-terminal-header .terminal-shell { margin-left: auto; }
+.command-code .terminal-shell { color: var(--cds-text-secondary); font-size: 12px; }
+.command-code .terminal-dots { display: flex; gap: 7px; flex-shrink: 0; }
+.command-code .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.command-code .terminal-dot-red { background: #ff5f57; }
+.command-code .terminal-dot-yellow { background: #febc2e; }
+.command-code .terminal-dot-green { background: #28c840; }
 
 .command-code--compact {
+    --command-padding: 6px 16px;
     margin-block: 8px;
-    border: 1px solid var(--cds-border-subtle);
+    box-shadow: none;
 }
-
-.command-code--compact:focus-within {
-    border-color: var(--cds-focus);
-}
-
-.command-code--compact .command-actions {
-    align-self: flex-start;
-    padding: 0 4px;
-}
-
-.command-code--expanded {
-    --command-font-size: 18px;
-    --command-line-height: 1.7;
-    --command-padding: 12px;
-}
+.command-code--compact .command-terminal-header { min-height: 34px; }
+.command-code--expanded { --command-font-size: 16px; }
 
 .command-code pre {
-    flex: 1;
     min-width: 0;
+    max-width: 100%;
     overflow-x: auto;
     margin: 0;
     padding: var(--command-padding);
-    font-family: 'IBM Plex Mono', Menlo, Consolas, monospace;
+    font-family: 'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
     font-size: var(--command-font-size);
     font-weight: 400;
-    line-height: var(--command-line-height);
-    letter-spacing: .16px;
+    line-height: 1.6;
     white-space: pre;
     overflow-wrap: normal;
     overscroll-behavior-x: contain;
     tab-size: 4;
-    -webkit-font-smoothing: antialiased;
+    border-radius: 0 0 6px 6px;
 }
-
 .command-code code,
-.command-code .command-token {
-    font: inherit;
-    letter-spacing: inherit;
-}
-
-.command-code button {
-    width: 40px;
-    min-height: 40px;
+.command-code .command-token { font: inherit; }
+.command-code .terminal-prompt { color: var(--command-prompt); font-weight: 600; user-select: none; }
+.command-code .command-actions { display: flex; align-items: center; gap: 4px; padding: 0; align-self: center; }
+.command-code .command-actions button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    min-height: 32px;
     padding: 0;
+    border: 0;
+    border-radius: 4px;
     flex-shrink: 0;
-    align-self: center;
+    background: transparent;
+    color: var(--cds-text-secondary);
+    cursor: pointer;
 }
+.command-code .command-actions button:hover { background: color-mix(in srgb, var(--cds-text-primary) 10%, transparent); color: var(--cds-text-primary); }
+.command-code .command-actions button[data-copied] { color: var(--command-prompt); }
+.command-code .command-copy { order: 1; }
+.command-code :focus-visible { outline: 2px solid var(--cds-focus); outline-offset: -2px; }
 
 .command-parameters code {
     font-family: 'IBM Plex Mono', Menlo, Consolas, monospace;
@@ -435,10 +460,10 @@
 
 /* Keep generous touch targets without imposing them on the desktop list. */
 @media(max-width: 671px), (pointer: coarse) {
-    .command-code button,
+    .command-code .command-actions button,
     .command-results-bar .command-favorite {
-        width: 48px;
-        min-height: 48px;
+        width: 40px;
+        min-height: 40px;
     }
 }
 
@@ -453,72 +478,7 @@
     }
 }
 
-/* A self-contained terminal palette stays dark in both application themes. */
-.terminal-card {
-    --terminal-background: var(--cds-header);
-    --terminal-text: var(--cds-header-text);
-    --terminal-muted: var(--cds-header-muted);
-    --terminal-red: #fa4d56;
-    --terminal-yellow: #f1c21b;
-    --terminal-green: #6fdc8c;
-    margin-top: 16px;
-    padding: 16px;
-    min-width: 0;
-    border-radius: 8px;
-    background: var(--terminal-background);
-    color: var(--terminal-text);
-    font-family: 'IBM Plex Mono', Menlo, Consolas, monospace;
-}
-
-.terminal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.terminal-dots {
-    display: flex;
-    gap: 6px;
-}
-
-.terminal-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
-.terminal-dot-red { background: var(--terminal-red); }
-.terminal-dot-yellow { background: var(--terminal-yellow); }
-.terminal-dot-green { background: var(--terminal-green); }
-
-.terminal-shell {
-    color: var(--terminal-muted);
-    font-size: 12px;
-}
-
-.terminal-card .command-code {
-    margin: 0;
-    background: transparent;
-}
-
-.terminal-prompt {
-    user-select: none;
-}
-
-.command-sheet .terminal-card button {
-    background: transparent;
-    color: var(--terminal-text);
-}
-
-.command-sheet .terminal-card button:hover {
-    background: var(--cds-header-hover);
-}
-
-.terminal-card :focus-visible {
-    outline-color: var(--terminal-text);
-}
+.terminal-card { min-width: 0; margin-top: 16px; }
 
 .command-dialog-body section > h3 {
     padding-bottom: 8px;
@@ -533,33 +493,21 @@
 .command-dialog-body { padding: 16px 24px 24px; line-height: 1.6; }
 .command-dialog-body .eyebrow { margin: 0 0 8px; font-size: 12px; color: var(--cds-text-secondary); }
 .command-dialog-body .command-description { margin-top: 16px; color: var(--cds-text-secondary); }
-.command-dialog .terminal-card {
-    margin-top: 0;
-    padding: 0;
-    border-radius: 0;
-    background: var(--cds-layer-01);
-    color: var(--cds-text-primary);
-}
-.command-dialog .terminal-header { margin: 0; padding: 8px 16px; border-bottom: 1px solid var(--cds-border-subtle); }
-.command-dialog .terminal-shell { color: var(--cds-text-secondary); }
-.command-dialog .terminal-dot { width: 8px; height: 8px; }
-.command-dialog .terminal-card button { color: var(--cds-link-primary); }
-.command-dialog .terminal-card button:hover { background: var(--cds-layer-hover); }
-.command-dialog .terminal-card :focus-visible { outline-color: var(--cds-focus); }
-.terminal-prompt { color: var(--cds-text-secondary); }
+.command-dialog .terminal-card { margin-top: 0; }
 .command-token { color: var(--command-light); }
 :root[data-theme=dark] .command-token { color: var(--command-dark); }
 @media (max-width: 671px) {
     .command-dialog-heading { padding: 8px 12px; }
     .command-dialog-body { padding: 12px; }
     .command-code {
-        --command-font-size: 15px;
-        --command-padding: 8px;
+        --command-font-size: 14px;
+        --command-padding: 12px;
     }
     .command-code--expanded {
-        --command-font-size: 16px;
-        --command-padding: 12px 8px;
+        --command-font-size: 15px;
+        --command-padding: 12px;
     }
     .command-row > p { font-size: 13px; }
-    .command-dialog .terminal-header { padding-inline: 12px; }
+    .command-terminal-header { padding-left: 12px; }
+    .command-code--compact { --command-padding: 6px 12px; }
 }
