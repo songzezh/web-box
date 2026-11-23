@@ -4,6 +4,9 @@ import { ToolPageLayout } from '../../components/Tools'
 import { ShortcutItem } from '../../components/shortcuts'
 import { vimShortcuts } from './vim-data'
 import { categories, modes, matchesShortcut, shortcutSteps } from './shortcut-model'
+import { ApplicationSidebar } from './ApplicationSidebar'
+import { applicationNameKey } from './applications'
+import type { ApplicationId } from './applications'
 import './shortcuts.css'
 
 const combinations = [
@@ -13,7 +16,7 @@ const combinations = [
 export default function KeyboardShortcuts() {
   const { t, i18n } = useTranslation('tools')
   const [platform, setPlatform] = useState<'windows' | 'mac'>('windows')
-  const [app, setApp] = useState('general')
+  const [app, setApp] = useState<ApplicationId>('general')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [category, setCategory] = useState('')
   const [mode, setMode] = useState('')
@@ -22,8 +25,11 @@ export default function KeyboardShortcuts() {
   const language = i18n.resolvedLanguage === 'zh-CN' ? 'zh-CN' : 'en'
   const visible = vimShortcuts.filter(item => (!category || item.category === category || item.relatedCategories?.some(value => value === category)) && (!mode || item.modes.includes(mode as typeof modes[number]) || item.targetMode === mode) && (!compatibility || item.compatibility === compatibility) && matchesShortcut(item, query))
   return <ToolPageLayout title={t('keyboard-shortcuts.name')} description={t('keyboard-shortcuts.description')}>
+    <div className="shortcuts-layout">
+    <ApplicationSidebar selected={app} onSelect={value => { setApp(value); setExpandedId(null) }} />
+    <section className="shortcuts-content" aria-labelledby="shortcut-application-title">
+    <h2 id="shortcut-application-title">{t(applicationNameKey(app))}</h2>
     <div className="shortcuts-controls">
-      <label>{t('shortcuts.app')} <select value={app} onChange={event => { setApp(event.target.value); setExpandedId(null) }}><option value="general">{t('shortcuts.general')}</option><option value="vim">Vim / Vi</option></select></label>
       <label>{t('keyboard.platform')} <select value={platform} onChange={event => { setPlatform(event.target.value as 'windows' | 'mac'); setExpandedId(null) }}><option value="windows">Windows / Linux</option><option value="mac">macOS</option></select></label>
     </div>
     {app === 'vim' && <>
@@ -51,6 +57,8 @@ export default function KeyboardShortcuts() {
             {item.keys === 'r' && <p>{t('shortcuts.replaceNote')}</p>}
           </>} />)}
       </>}
+    </div>
+    </section>
     </div>
   </ToolPageLayout>
 }

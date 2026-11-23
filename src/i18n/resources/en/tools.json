@@ -50,6 +50,8 @@
   "keyboard.paste": "Paste",
   "keyboard.undo": "Undo",
   "keyboard.systemTheme": "Follow system theme",
+  "shortcuts.applications": "Applications",
+  "shortcuts.vim": "Vim / Vi",
   "shortcuts.app": "Application",
   "shortcuts.general": "General shortcuts",
   "shortcuts.search": "Search shortcuts",

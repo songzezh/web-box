@@ -6,3 +6,32 @@
 .shortcut-results > p { grid-column: 1 / -1; margin-block: 0 8px; }
 @media (max-width: 672px) { .shortcuts-filters label { width: 100%; } .shortcuts-filters select, .shortcuts-filters input[type="search"] { width: 100%; } }
 .shortcuts-help { color: var(--cds-text-secondary); font-size: 14px; margin-block: 16px; }
+.shortcuts-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px; align-items: start; }
+.shortcuts-content { min-width: 0; }
+.shortcuts-content > h2 { margin: 0; font-size: 24px; font-weight: 400; }
+.application-sidebar { position: sticky; top: calc(var(--app-header-height) + 24px); max-height: calc(100dvh - var(--app-header-height) - 48px); display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--cds-border-subtle); padding-right: 16px; }
+.application-sidebar h2, .application-drawer h2 { margin: 0; padding: 12px; font-size: 14px; font-weight: 600; }
+.application-list { overflow-y: auto; min-height: 0; }
+.application-list button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 12px; border: 0; border-left: 2px solid transparent; background: transparent; color: var(--cds-text-primary); text-align: left; cursor: pointer; transition: background-color 150ms ease, color 150ms ease; }
+.application-list svg { flex-shrink: 0; color: var(--cds-text-secondary); }
+.application-list span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.application-list button:hover { background: var(--cds-layer-hover); }
+.application-list button[aria-current="true"] { background: var(--cds-selected); color: var(--cds-link-primary); border-left-color: var(--cds-link-primary); font-weight: 600; }
+.application-list button[aria-current="true"] svg { color: inherit; }
+.application-trigger { display: none; }
+.application-drawer { position: fixed; inset: 0 auto 0 0; margin: 0; padding: 0; width: min(300px, 85vw); max-width: none; height: 100dvh; max-height: none; border: 0; color: var(--cds-text-primary); background: var(--cds-background); }
+.application-drawer::backdrop { background: rgb(0 0 0 / 40%); }
+.application-drawer-panel { display: flex; flex-direction: column; height: 100%; padding: 16px; box-sizing: border-box; }
+.application-drawer header { display: flex; align-items: center; justify-content: space-between; }
+.application-drawer header button, .application-trigger { align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 12px; border: 0; background: var(--cds-layer-01); color: var(--cds-text-primary); cursor: pointer; }
+.application-drawer header button:hover, .application-trigger:hover { background: var(--cds-layer-hover); }
+body:has(.application-drawer[open]) { overflow: hidden; }
+@media (min-width: 768px) and (max-width: 1023px) { .shortcuts-layout { grid-template-columns: 184px minmax(0, 1fr); gap: 24px; } }
+@media (max-width: 767px) {
+  .shortcuts-layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .application-sidebar { display: none; }
+  .application-trigger { display: flex; justify-self: start; }
+  .shortcuts-content .shortcuts-filters label { width: 100%; }
+  .shortcuts-content .shortcuts-filters select, .shortcuts-content .shortcuts-filters input { width: 100%; min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .application-list button { transition: none; } }

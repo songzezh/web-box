@@ -50,6 +50,8 @@
   "keyboard.paste": "粘贴",
   "keyboard.undo": "撤销",
   "keyboard.systemTheme": "跟随系统主题",
+  "shortcuts.applications": "应用列表",
+  "shortcuts.vim": "Vim / Vi",
   "shortcuts.app": "应用",
   "shortcuts.general": "通用快捷键",
   "shortcuts.search": "搜索快捷键",
